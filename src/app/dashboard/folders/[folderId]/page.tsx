@@ -5,6 +5,9 @@ import { useParams } from "next/navigation";
 import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
 import { useState, useEffect, useCallback } from "react";
 import { Modal } from "@/components/Modal";
+import { getFolderNotes, saveFolderNotes } from "@/lib/supabase/notes";
+import { uploadFile, getFolderFiles } from "@/lib/supabase/files";
+import { createFolder, getChildFolders } from "@/lib/supabase/folders";
 
 export default function FolderPage() {
   const params = useParams<{ folderId: string }>();
@@ -16,25 +19,35 @@ export default function FolderPage() {
   const folderId = params.folderId;
   const folder = accessibleFolders.find((f) => f.id === folderId);
 
-  // Load notes from localStorage on mount
+  // Load notes from Supabase on mount
   useEffect(() => {
     if (folderId) {
-      const savedNotes = localStorage.getItem(`folder-notes-${folderId}`);
-      if (savedNotes) {
-        setNotes(savedNotes);
-      }
+      getFolderNotes(folderId)
+        .then((content) => {
+          if (content) setNotes(content);
+        })
+        .catch(console.error);
     }
   }, [folderId]);
 
-  // Auto-save notes with debouncing
+  // Auto-save notes to Supabase with debouncing
   useEffect(() => {
     if (!folderId) return;
 
+    // Skip if just saving status update
+    if (saveStatus === 'saved') return;
+
     setSaveStatus("saving");
     const timeoutId = setTimeout(() => {
-      localStorage.setItem(`folder-notes-${folderId}`, notes);
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus(""), 2000);
+      saveFolderNotes(folderId, notes)
+        .then(() => {
+          setSaveStatus("saved");
+          setTimeout(() => setSaveStatus(""), 2000);
+        })
+        .catch((error) => {
+          console.error('Error saving notes:', error);
+          setSaveStatus("");
+        });
     }, 1000);
 
     return () => clearTimeout(timeoutId);
@@ -73,42 +86,53 @@ export default function FolderPage() {
       return;
     }
 
-    // Simulate upload with progress
     setUploadProgress(0);
     setUploadError("");
 
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev === null) return null;
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 10;
+    try {
+      // Upload to Supabase Storage
+      const fileRecord = await uploadFile(folderId!, file, (progress) => {
+        setUploadProgress(progress);
       });
-    }, 200);
 
-    // Simulate async upload
-    setTimeout(() => {
+      // Transform record for display
       const newFile = {
-        id: Math.random().toString(36).substr(2, 9),
-        title: file.name,
-        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        uploaded: "Just now",
-        type: file.name.split('.').pop()?.toUpperCase() || "FILE"
+        id: fileRecord.id,
+        title: fileRecord.name,
+        size: `${(fileRecord.size / (1024 * 1024)).toFixed(1)} MB`,
+        uploaded: 'Just now',
+        type: fileRecord.type
       };
 
       setUploadedFiles((prev) => [newFile, ...prev]);
       setUploadProgress(null);
-    }, 2000);
-  }, []);
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadError("Upload failed. Please try again.");
+      setUploadProgress(null);
+    }
+  }, [folderId]);
 
-  // Mock docs + uploaded files
-  const docs = [
-    ...uploadedFiles,
-    { id: "1", title: "Q3 Financial Report.pdf", size: "2.4 MB", uploaded: "2h ago", type: "PDF" },
-    { id: "2", title: "Project Alpha Specs.docx", size: "1.1 MB", uploaded: "5h ago", type: "DOC" },
-  ];
+  // Load files from Supabase
+  useEffect(() => {
+    if (folderId) {
+      getFolderFiles(folderId)
+        .then(files => {
+          setUploadedFiles(files.map(f => ({
+            id: f.id,
+            title: f.name,
+            size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+            uploaded: new Date(f.uploaded_at).toLocaleDateString(),
+            type: f.type
+          })));
+        })
+        .catch(console.error);
+    }
+  }, [folderId]);
+
+
+  // Combined docs list (only uploaded files for now)
+  const docs = uploadedFiles;
 
   if (!folder) {
     return (
