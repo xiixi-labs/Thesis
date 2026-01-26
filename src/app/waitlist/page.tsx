@@ -89,7 +89,7 @@ const WaitlistForm = ({ layout = "stack", buttonText = "Join Waitlist" }: { layo
 
 export default function WaitlistPage() {
 	return (
-		<ThesisBackground className="min-h-screen flex flex-col justify-between p-6">
+		<ThesisBackground className="min-h-screen flex flex-col justify-between">
 			<header className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-10">
 				<Link href="/" className="flex items-center gap-2">
 					<LogoMark className="h-8 w-8" gradientId="waitlistLogo" />
@@ -97,7 +97,7 @@ export default function WaitlistPage() {
 				</Link>
 			</header>
 
-			<div className="flex-1 flex flex-col justify-center pt-24 px-6 md:px-24 max-w-5xl mx-auto w-full">
+			<div className="flex-1 flex flex-col justify-center pt-24 px-6 md:px-24 max-w-5xl mx-auto w-full relative z-10">
 				<div className="text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-6">Thesis + Gemini</div>
 				<h1 className="text-6xl md:text-8xl font-semibold text-zinc-950 tracking-tight leading-[1.1]">
 					Your files are<br />
@@ -105,13 +105,13 @@ export default function WaitlistPage() {
 				</h1>
 			</div>
 
-			<div className="w-full bg-white/60 backdrop-blur-2xl border-t border-black/10 p-8 md:p-12 -mx-6 -mb-6 mt-12 pb-24 relative z-10">
-				<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center px-6">
+			<div className="w-full bg-white/60 backdrop-blur-2xl border-t border-black/10 p-6 md:p-12 mt-12 pb-24 relative z-10">
+				<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center px-2 md:px-6">
 					<div className="flex-1">
 						<h3 className="text-2xl font-semibold text-zinc-950 mb-2">Start the conversation.</h3>
 						<p className="text-zinc-600">Students and Teams use Thesis to understand their world.</p>
 					</div>
-					<div className="w-full md:w-auto min-w-[320px] md:min-w-[400px]">
+					<div className="w-full md:w-auto md:min-w-[400px]">
 						<WaitlistForm layout="grid" />
 					</div>
 				</div>
