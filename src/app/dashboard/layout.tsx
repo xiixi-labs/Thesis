@@ -8,6 +8,7 @@ import {
   WorkspaceProvider,
   useWorkspace,
 } from "@/components/workspace/WorkspaceProvider";
+import { UserDropdown } from "@/components/UserDropdown";
 
 export default function DashboardLayout({
   children,
@@ -336,16 +337,8 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="border-t border-black/5 px-6 py-4 bg-white/30 backdrop-blur-md">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-zinc-100 to-zinc-300 flex items-center justify-center text-xs font-bold text-zinc-600 border border-white shadow-sm">
-                  {user.name.charAt(0)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-zinc-900 truncate">{user.name}</div>
-                  <div className="text-xs text-zinc-500 truncate">{user.role}</div>
-                </div>
-              </div>
+            <div className="border-t border-black/5 px-3 py-3 bg-white/30 backdrop-blur-md">
+              <UserDropdown userName={user.name} userRole={user.role} />
             </div>
           </aside>
         </div>
