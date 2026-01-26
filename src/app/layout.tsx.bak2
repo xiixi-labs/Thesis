@@ -15,14 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Thesis — Learn Anything",
-  description: "Thesis turns your company's knowledge into grounded answers with sources.",
-  icons: {
-    icon: '/brain-circle-mask.svg',
-    apple: '/brain-circle-mask.svg',
-  },
-};
 
 export default function RootLayout({
   children,
