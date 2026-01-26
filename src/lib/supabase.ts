@@ -1,8 +1,9 @@
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Use environment variables or placeholders for build time
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
 export const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
 
@@ -15,7 +16,7 @@ export const supabaseAdmin = serviceRoleKey
 // Export createClient function for API compatibility
 export function createClient() {
     return createSupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
     );
 }
