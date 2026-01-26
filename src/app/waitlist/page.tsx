@@ -98,8 +98,8 @@ export default function WaitlistPage() {
 			</header>
 
 			<div className="flex-1 flex flex-col justify-center pt-20 md:pt-24 px-4 md:px-6 lg:px-24 max-w-5xl mx-auto w-full">
-				<div className="text-xs md:text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-4 md:mb-6">Thesis + Gemini</div>
-				<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-semibold text-zinc-950 tracking-tight leading-[1.1]">
+				<div className="text-xs md:text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-4 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">Thesis + Gemini</div>
+				<h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-zinc-950 tracking-tight leading-[1.05] animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100">
 					Your files are<br />
 					waiting to speak.
 				</h1>
