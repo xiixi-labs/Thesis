@@ -167,17 +167,17 @@ export default function FolderPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Row: Header (75%) + Quick Notes (25%) */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Header - 75% width, reduced height */}
-        <div className={`lg:w-[75%] relative overflow-hidden rounded-[2rem] bg-gradient-to-br ${coverGradient} border border-black/5 p-4 md:p-5 shadow-sm`}>
-          {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-black/40 mb-3">
-            <span>{org.name.includes("University") ? "Classes" : "Workspace"}</span>
-            <ChevronRightIcon className="h-3 w-3" />
-            <span>{folder.teamIds[0].replace('team_', '').toUpperCase()}</span>
-            <ChevronRightIcon className="h-3 w-3" />
-            <span className="text-black/80">{folder.name}</span>
+      {/* Top Row: Header (75%) + Quick Notes (25%) - Stacks on mobile */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+        {/* Header - Full width on mobile, 75% on desktop */}
+        <div className={`w-full lg:w-[75%] relative overflow-hidden rounded-2xl lg:rounded-[2rem] bg-gradient-to-br ${coverGradient} border border-black/5 p-5 md:p-6 shadow-sm`}>
+          {/* Breadcrumbs - Scrollable on mobile */}
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-black/40 mb-4 overflow-x-auto scrollbar-hide">
+            <span className="whitespace-nowrap">{org.name.includes("University") ? "Classes" : "Workspace"}</span>
+            <ChevronRightIcon className="h-3 w-3 flex-shrink-0" />
+            <span className="whitespace-nowrap">{folder.teamIds[0].replace('team_', '').toUpperCase()}</span>
+            <ChevronRightIcon className="h-3 w-3 flex-shrink-0" />
+            <span className="text-black/80 whitespace-nowrap">{folder.name}</span>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -196,9 +196,10 @@ export default function FolderPage() {
               </div>
             </div>
 
+            {/* Ask Thea Button - Full width on mobile */}
             <Link
               href={`/dashboard/thea?folder=${folder.id}`}
-              className="relative isolate overflow-hidden flex items-center gap-2 rounded-full px-5 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 hover:scale-[1.02] transition transform active:scale-95"
+              className="relative isolate overflow-hidden flex items-center justify-center gap-2 rounded-full px-6 py-3 md:px-5 md:py-2 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 hover:scale-[1.02] transition transform active:scale-95 w-full md:w-auto min-h-[44px]"
             >
               {/* Animated gradient blobs background */}
               <div className="absolute inset-0 -z-10 bg-white motion-safe:animate-spin motion-safe:[animation-duration:20s]">
@@ -214,11 +215,11 @@ export default function FolderPage() {
           </div>
         </div>
 
-        {/* Quick Notes - 25% width */}
-        <div className="lg:w-[25%]">
-          <div className="h-full rounded-[2rem] border border-yellow-200/50 bg-yellow-50/50 p-5 shadow-sm backdrop-blur-xl relative overflow-hidden group min-h-[140px]">
+        {/* Quick Notes - Full width on mobile, 25% on desktop */}
+        <div className="w-full lg:w-[25%]">
+          <div className="h-full rounded-2xl lg:rounded-[2rem] border border-yellow-200/50 bg-yellow-50/50 p-4 md:p-5 shadow-sm backdrop-blur-xl relative overflow-hidden group min-h-[140px]">
             <div className="absolute top-0 right-0 p-3 opacity-50">
-              <NoteIcon className="h-20 w-20 text-yellow-500/10 rotate-12" />
+              <NoteIcon className="h-16 md:h-20 w-16 md:w-20 text-yellow-500/10 rotate-12" />
             </div>
             <div className="relative z-10 h-full flex flex-col">
               <div className="flex items-center justify-between mb-2">
@@ -235,17 +236,18 @@ export default function FolderPage() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Click to add a note or description for this folder..."
-                className="flex-1 text-sm text-yellow-900 bg-transparent border-none outline-none resize-none placeholder:italic placeholder:text-yellow-900/60 focus:placeholder:text-yellow-900/40"
+                className="flex-1 text-sm text-yellow-900 bg-transparent border-none outline-none resize-none placeholder:italic placeholder:text-yellow-900/60 focus:placeholder:text-yellow-900/40 min-h-[100px] touch-manipulation"
               />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content - Single column on mobile, 3 columns on desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         {/* Left Column: Documents & Upload */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Upload Area */}
+          {/* Upload Area - Optimized for mobile */}
           <div
             onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
             onDragLeave={() => setIsDragOver(false)}
@@ -255,7 +257,7 @@ export default function FolderPage() {
               handleFileUpload(e.dataTransfer.files);
             }}
             onClick={() => document.getElementById('file-upload')?.click()}
-            className={`group relative flex flex-col items-center justify-center rounded-[2rem] border-2 border-dashed p-10 text-center transition-all duration-300 cursor-pointer ${isDragOver ? "border-indigo-500 bg-indigo-50/50 scale-[0.99]" :
+            className={`group relative flex flex-col items-center justify-center rounded-2xl lg:rounded-[2rem] border-2 border-dashed p-6 md:p-10 text-center transition-all duration-300 cursor-pointer min-h-[120px] md:min-h-[140px] ${isDragOver ? "border-indigo-500 bg-indigo-50/50 scale-[0.99]" :
               uploadError ? "border-red-300 bg-red-50/50" :
                 "border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/60"
               }`}
@@ -282,10 +284,10 @@ export default function FolderPage() {
               </>
             ) : (
               <>
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 group-hover:scale-110 transition">
-                  <PlusIcon className="h-6 w-6 text-zinc-600" />
+                <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 group-hover:scale-110 transition">
+                  <PlusIcon className="h-5 w-5 md:h-6 md:w-6 text-zinc-600" />
                 </div>
-                <div className="mt-4">
+                <div className="mt-3 md:mt-4">
                   <p className="text-sm font-semibold text-zinc-900">
                     {uploadError || "Upload documents"}
                   </p>
