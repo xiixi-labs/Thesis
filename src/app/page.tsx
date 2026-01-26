@@ -47,12 +47,14 @@ export default function Home() {
             <Link href="/sign-in" className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900">
               Sign in
             </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/40 active:scale-95"
-            >
-              Get Started →
-            </Link>
+            <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
+              <a
+                className="inline-flex items-center justify-center rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                href="/waitlist"
+              >
+                Join waitlist
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -74,57 +76,40 @@ export default function Home() {
 
         <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-10">
           {/* Statement Hero */}
-          <section className="flex min-h-[75vh] flex-col items-center justify-center text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-50/80 px-4 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm shadow-emerald-900/5 backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              Now accepting teams • Individual plans coming soon
+          <section className="flex min-h-[70vh] flex-col items-center justify-center text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/45 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+              Now onboarding teams
             </div>
 
-            <h1 className="mt-10 max-w-5xl text-6xl font-bold leading-[1.05] tracking-tight text-zinc-950 sm:text-7xl md:text-8xl lg:text-9xl animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-              Learn <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Anything</span>.
+            <h1 className="mt-8 max-w-4xl text-6xl font-semibold leading-[1.05] tracking-tight text-zinc-950 sm:text-7xl md:text-8xl">
+              Learn Anything.
             </h1>
 
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-zinc-600 sm:text-xl sm:leading-9 md:text-2xl md:leading-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-              Turn your documents into <span className="font-semibold text-zinc-900">cited answers</span>.
-              <br className="hidden sm:block" />
-              Upload once, ask anything, get sources.
+            <p className="mt-6 max-w-none whitespace-nowrap text-base leading-7 text-zinc-600 sm:text-lg sm:leading-8 md:text-xl">
+              Cited answers from your notes.
             </p>
 
-            <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-              <div className="group relative">
-                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 opacity-75 blur group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <Link
-                  href="/sign-up"
-                  className="relative inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-10 text-base font-bold text-white shadow-xl transition hover:scale-105 active:scale-95"
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+              <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-xl shadow-zinc-900/10">
+                <a
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-white/95 px-8 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                  href="/waitlist"
                 >
-                  Get Started Free →
-                </Link>
+                  Request access
+                </a>
               </div>
-              <Link
-                className="inline-flex h-14 items-center justify-center rounded-full border-2 border-zinc-200 bg-white/60 px-8 text-base font-semibold text-zinc-900 shadow-sm backdrop-blur-2xl transition hover:bg-white hover:border-zinc-300 hover:scale-105 active:scale-95"
+              <a
+                className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white/40 px-8 text-sm font-semibold text-zinc-900 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/55"
                 href="#how-it-works"
               >
                 See how it works
-              </Link>
+              </a>
             </div>
 
-            <div className="mt-16 flex items-center gap-8 text-sm text-zinc-500 animate-in fade-in duration-700 delay-500">
-              <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>No credit card required</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>Setup in 2 minutes</span>
-              </div>
-            </div>
+            <p className="mt-16 text-sm text-zinc-500">
+              Students and individuals coming soon.
+            </p>
           </section>
 
 
