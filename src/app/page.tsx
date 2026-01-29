@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LogoMark } from "@/components/LogoMark";
+import { TheaMark } from "@/components/TheaMark";
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -77,20 +78,29 @@ export default function Home() {
         <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-10">
           {/* Statement Hero */}
           <section className="flex min-h-[70vh] flex-col items-center justify-center text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/45 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/45 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl opacity-0 animate-fade-in-up">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
               Now onboarding teams
             </div>
 
-            <h1 className="mt-8 max-w-4xl text-6xl font-semibold leading-[1.05] tracking-tight text-zinc-950 sm:text-7xl md:text-8xl">
+            <h1
+              className="mt-8 max-w-4xl text-6xl font-semibold leading-[1.05] tracking-tight text-zinc-950 sm:text-7xl md:text-8xl opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "100ms" }}
+            >
               Learn Anything.
             </h1>
 
-            <p className="mt-6 max-w-none whitespace-nowrap text-base leading-7 text-zinc-600 sm:text-lg sm:leading-8 md:text-xl">
+            <p
+              className="mt-6 max-w-none whitespace-nowrap text-base leading-7 text-zinc-600 sm:text-lg sm:leading-8 md:text-xl opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "200ms" }}
+            >
               Cited answers from your notes.
             </p>
 
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+            <div
+              className="mt-10 flex flex-col items-center gap-4 sm:flex-row opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "300ms" }}
+            >
               <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-xl shadow-zinc-900/10">
                 <a
                   className="inline-flex h-12 items-center justify-center rounded-full bg-white/95 px-8 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
@@ -107,7 +117,10 @@ export default function Home() {
               </a>
             </div>
 
-            <p className="mt-16 text-sm text-zinc-500">
+            <p
+              className="mt-16 text-sm text-zinc-500 opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "500ms" }}
+            >
               Students and individuals coming soon.
             </p>
           </section>
@@ -175,15 +188,22 @@ export default function Home() {
               </div>
 
               {/* Card 2: Thea */}
-              <div className="md:col-span-5 bg-black text-white rounded-[2rem] p-8 flex flex-col justify-between shadow-xl relative overflow-hidden min-h-[300px]">
+              <div className="md:col-span-5 bg-white/40 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl relative overflow-hidden group min-h-[300px]">
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-semibold mb-2">Meet Thea</h3>
-                  <p className="text-zinc-400">Your AI Research Assistant.</p>
+                  <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Meet Thea</h3>
+                  <p className="text-zinc-600">Your AI Research Assistant.</p>
                 </div>
-                <div className="text-8xl absolute bottom-[-20px] right-[-20px] opacity-10 font-serif italic">AI</div>
-                <button className="mt-auto self-start bg-white/20 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm hover:bg-white/30 transition">
-                  Start Chat →
-                </button>
+
+                <div className="absolute right-[-2rem] bottom-[-2rem] opacity-90 transition-transform duration-700 group-hover:scale-110">
+                  <TheaMark className="h-48 w-48" />
+                </div>
+
+                <div className="relative z-10 mt-auto self-start">
+                  <button className="bg-white/50 backdrop-blur-md border border-black/5 px-5 py-2.5 rounded-full text-sm font-medium text-zinc-900 shadow-sm hover:bg-white/80 transition flex items-center gap-2">
+                    Start Chat
+                    <span className="text-xs text-zinc-500">→</span>
+                  </button>
+                </div>
               </div>
 
               {/* Card 3: Security */}
@@ -288,32 +308,37 @@ export default function Home() {
               </div>
 
               {/* Business */}
-              <div className="rounded-[2rem] border border-black/10 bg-white/40 p-7 shadow-[0_28px_90px_-30px_rgba(0,0,0,0.24)] backdrop-blur-3xl">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-semibold text-zinc-950">Business</div>
-                  <span className="rounded-full border border-black/10 bg-white/35 px-2.5 py-1 text-xs font-semibold text-zinc-700 backdrop-blur-2xl shadow-sm shadow-zinc-900/5">
-                    Most popular
-                  </span>
-                </div>
-                <div className="mt-3 flex items-end gap-2">
-                  <div className="text-4xl font-semibold tracking-tight text-zinc-950">$500</div>
-                  <div className="pb-1 text-sm text-zinc-600">/ month</div>
-                </div>
-                <div className="mt-2 text-sm text-zinc-600">Up to 50 users</div>
+              <div className="relative rounded-[2rem] p-[1px] shadow-[0_28px_90px_-30px_rgba(0,0,0,0.3)] transition hover:-translate-y-1">
+                {/* Gradient Border */}
+                <div className="absolute inset-0 rounded-[2rem] bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] opacity-60" />
 
-                <ul className="mt-6 space-y-2 text-sm text-zinc-700">
-                  <li>Everything in Start-Up</li>
-                  <li>Admin controls + role gating</li>
-                  <li>Priority support</li>
-                </ul>
+                <div className="relative h-full rounded-[2rem] bg-white/60 p-7 backdrop-blur-3xl">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-semibold text-zinc-950">Business</div>
+                    <span className="rounded-full border border-black/5 bg-zinc-900/5 px-2.5 py-1 text-xs font-semibold text-zinc-900 backdrop-blur-md">
+                      Most popular
+                    </span>
+                  </div>
+                  <div className="mt-3 flex items-end gap-2">
+                    <div className="text-4xl font-semibold tracking-tight text-zinc-950">$500</div>
+                    <div className="pb-1 text-sm text-zinc-600">/ month</div>
+                  </div>
+                  <div className="mt-2 text-sm text-zinc-600">Up to 50 users</div>
 
-                <div className="mt-7 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
-                  <a
-                    className="inline-flex h-11 w-full items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                    href="/waitlist"
-                  >
-                    Join the waitlist
-                  </a>
+                  <ul className="mt-6 space-y-2 text-sm text-zinc-700">
+                    <li>Everything in Start-Up</li>
+                    <li>Admin controls + role gating</li>
+                    <li>Priority support</li>
+                  </ul>
+
+                  <div className="mt-7 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
+                    <a
+                      className="inline-flex h-11 w-full items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                      href="/waitlist"
+                    >
+                      Join the waitlist
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -347,7 +372,7 @@ export default function Home() {
               Frequently asked questions
             </h2>
 
-            <div className="mt-8 grid gap-4 max-w-3xl mx-auto">
+            <div className="mt-8 grid gap-4 max-w-5xl mx-auto md:grid-cols-2">
               {[
                 {
                   q: "Is my data private?",
@@ -366,13 +391,7 @@ export default function Home() {
                   a: "Thesis uses Retrieval-Augmented Generation (RAG) to ground every answer in your specific documents. We provide citations for every claim so you can verify the source yourself.",
                 },
               ].map((faq, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl border border-black/10 bg-white/40 p-6 shadow-sm backdrop-blur-xl transition hover:bg-white/60"
-                >
-                  <h3 className="text-base font-semibold text-zinc-900">{faq.q}</h3>
-                  <p className="mt-2 text-sm leading-6 text-zinc-600">{faq.a}</p>
-                </div>
+                <FAQItem key={i} question={faq.q} answer={faq.a} />
               ))}
             </div>
           </section>
@@ -394,5 +413,33 @@ export default function Home() {
         </footer>
       </div>
     </div >
+  );
+}
+
+function FAQItem({ question, answer }: { question: string; answer: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="rounded-2xl border border-black/10 bg-white/40 shadow-sm backdrop-blur-xl transition hover:bg-white/60">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between px-6 py-4 text-left"
+      >
+        <span className="text-base font-semibold text-zinc-900">{question}</span>
+        <span className={`transform transition-transform duration-200 ${isOpen ? "rotate-45" : ""}`}>
+          <svg className="h-5 w-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </span>
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+          }`}
+      >
+        <div className="px-6 pb-4 text-sm leading-6 text-zinc-600">
+          {answer}
+        </div>
+      </div>
+    </div>
   );
 }
