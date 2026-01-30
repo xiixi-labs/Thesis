@@ -64,16 +64,16 @@ export default function Home() {
         {/* Vibrant Ambient Glow - Extended */}
         <div className="pointer-events-none absolute left-1/2 top-[-12rem] h-[38rem] w-[58rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.45),rgba(255,255,255,0)_60%)] blur-[80px]" />
         <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.4),rgba(255,255,255,0)_55%)] blur-[80px]" />
-        <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.45),rgba(255,255,255,0)_60%)] blur-[90px]" />
-        <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.4),rgba(255,255,255,0)_58%)] blur-[90px]" />
-        <div className="pointer-events-none absolute left-[12%] top-[24rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),rgba(255,255,255,0)_60%)] blur-[90px]" />
-        <div className="pointer-events-none absolute right-[8%] top-[32rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.35),rgba(255,255,255,0)_60%)] blur-[90px]" />
+        <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.45),rgba(255,255,255,0)_60%)] blur-[90px] hidden md:block" />
+        <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.4),rgba(255,255,255,0)_58%)] blur-[90px] hidden md:block" />
+        <div className="pointer-events-none absolute left-[12%] top-[24rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),rgba(255,255,255,0)_60%)] blur-[90px] hidden md:block" />
+        <div className="pointer-events-none absolute right-[8%] top-[32rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.35),rgba(255,255,255,0)_60%)] blur-[90px] hidden md:block" />
         <div className="pointer-events-none absolute bottom-[-20rem] left-1/2 h-[44rem] w-[70rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.35),rgba(255,255,255,0)_60%)] blur-[100px]" />
 
         {/* Lower page ambient glow for continuity */}
-        <div className="pointer-events-none absolute left-[-10%] top-[60rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.3),rgba(255,255,255,0)_60%)] blur-[90px]" />
-        <div className="pointer-events-none absolute right-[-5%] top-[70rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3),rgba(255,255,255,0)_60%)] blur-[90px]" />
-        <div className="pointer-events-none absolute left-[20%] bottom-[-10rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.3),rgba(255,255,255,0)_60%)] blur-[100px]" />
+        <div className="pointer-events-none absolute left-[-10%] top-[60rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.3),rgba(255,255,255,0)_60%)] blur-[90px] hidden md:block" />
+        <div className="pointer-events-none absolute right-[-5%] top-[70rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3),rgba(255,255,255,0)_60%)] blur-[90px] hidden md:block" />
+        <div className="pointer-events-none absolute left-[20%] bottom-[-10rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.3),rgba(255,255,255,0)_60%)] blur-[100px] hidden md:block" />
 
         <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-10">
           {/* Statement Hero */}
@@ -131,7 +131,7 @@ export default function Home() {
 
           {/* Who it's for - moved above features for better narrative flow */}
           <section id="who-its-for" className="mt-20">
-            <div className="rounded-[2rem] border border-black/10 bg-white/25 p-8 shadow-[0_18px_60px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
+            <div className="rounded-[2rem] border border-black/10 bg-white/70 p-8 shadow-[0_18px_60px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
                 For teams and individual learners.
               </h2>
@@ -140,7 +140,7 @@ export default function Home() {
               </p>
 
               <div className="mt-8 grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-black/10 bg-white/25 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/40">
+                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
                   <div className="text-sm font-semibold text-zinc-950">Individuals & Students</div>
                   <div className="mt-2 text-sm leading-6 text-zinc-700">
                     Turn readings, slides, and notes into study guides, quick summaries, and cited answers.
@@ -153,7 +153,7 @@ export default function Home() {
                   <div className="mt-4 text-xs text-zinc-500">Individual plans coming soon.</div>
                 </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white/25 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/40">
+                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
                   <div className="text-sm font-semibold text-zinc-950">Teams</div>
                   <div className="mt-2 text-sm leading-6 text-zinc-700">
                     Keep knowledge centralized and auditable—from onboarding docs to policies and training.
@@ -177,7 +177,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               {/* Card 1: Upload */}
-              <div className="md:col-span-7 bg-white/40 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl">
+              <div className="md:col-span-7 bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl">
                 <div>
                   <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Drag & Drop Ingestion</h3>
                   <p className="text-zinc-600">Support for PDF, DOCX, CSV, and PPTX.</p>
@@ -188,7 +188,7 @@ export default function Home() {
               </div>
 
               {/* Card 2: Thea */}
-              <div className="md:col-span-5 bg-white/40 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl relative overflow-hidden group min-h-[300px]">
+              <div className="md:col-span-5 bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl relative overflow-hidden group min-h-[300px]">
                 <div className="relative z-10">
                   <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Meet Thea</h3>
                   <p className="text-zinc-600">Your AI Research Assistant.</p>
@@ -235,7 +235,7 @@ export default function Home() {
           </section>
 
           <section id="security" className="mt-24">
-            <div className="rounded-[2rem] border border-black/10 bg-white/30 p-8 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
+            <div className="rounded-[2rem] border border-black/10 bg-white/65 p-8 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
@@ -260,7 +260,7 @@ export default function Home() {
                   (item) => (
                     <div
                       key={item}
-                      className="rounded-2xl border border-black/10 bg-white/25 px-4 py-3 text-sm font-semibold text-zinc-900 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:bg-white/40"
+                      className="rounded-2xl border border-black/10 bg-white/65 px-4 py-3 text-sm font-semibold text-zinc-900 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:bg-white/80"
                     >
                       {item}
                     </div>
@@ -283,7 +283,7 @@ export default function Home() {
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {/* Startup */}
-              <div className="rounded-[2rem] border border-black/10 bg-white/35 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
+              <div className="rounded-[2rem] border border-black/10 bg-white/70 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
                 <div className="text-sm font-semibold text-zinc-950">Start-Up</div>
                 <div className="mt-3 flex items-end gap-2">
                   <div className="text-4xl font-semibold tracking-tight text-zinc-950">$250</div>
@@ -312,7 +312,7 @@ export default function Home() {
                 {/* Gradient Border */}
                 <div className="absolute inset-0 rounded-[2rem] bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] opacity-60" />
 
-                <div className="relative h-full rounded-[2rem] bg-white/60 p-7 backdrop-blur-3xl">
+                <div className="relative h-full rounded-[2rem] bg-white/75 p-7 backdrop-blur-3xl">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold text-zinc-950">Business</div>
                     <span className="rounded-full border border-black/5 bg-zinc-900/5 px-2.5 py-1 text-xs font-semibold text-zinc-900 backdrop-blur-md">
@@ -343,7 +343,7 @@ export default function Home() {
               </div>
 
               {/* Enterprise */}
-              <div className="rounded-[2rem] border border-black/10 bg-white/35 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
+              <div className="rounded-[2rem] border border-black/10 bg-white/70 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
                 <div className="text-sm font-semibold text-zinc-950">Enterprise</div>
                 <div className="mt-3 flex items-end gap-2">
                   <div className="text-4xl font-semibold tracking-tight text-zinc-950">Custom</div>
@@ -420,7 +420,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-white/40 shadow-sm backdrop-blur-xl transition hover:bg-white/60">
+    <div className="rounded-2xl border border-black/10 bg-white/70 shadow-sm backdrop-blur-xl transition hover:bg-white/85">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between px-6 py-4 text-left"

@@ -65,3 +65,12 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Performance optimization for backdrop-blur */
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl {
+  will-change: backdrop-filter;
+  backdrop-filter: blur(var(--tw-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--tw-backdrop-blur));
+}
