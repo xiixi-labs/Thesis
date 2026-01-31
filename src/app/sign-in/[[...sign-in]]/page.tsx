@@ -11,25 +11,16 @@ export default function SignInPage() {
             <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.4),rgba(255,255,255,0)_55%)] blur-[80px]" />
             <div className="pointer-events-none absolute right-[-10rem] bottom-[-10rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),rgba(255,255,255,0)_60%)] blur-[90px]" />
 
-            {/* Header / Logo & Status Badge */}
-            <div className="z-10 flex flex-col items-center gap-4">
+            {/* Header / Logo */}
+            <div className="z-10 flex flex-col items-center gap-3">
                 <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
                     <LogoMark className="h-10 w-10" gradientId="authLogo" />
                     <span className="text-xl font-semibold tracking-tight text-zinc-950">Thesis</span>
                 </Link>
-
-                {/* Status Badge */}
-                <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/45 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm backdrop-blur-2xl">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    Secure sign-in
-                </div>
-
-                <p className="text-zinc-600 text-sm text-center max-w-md">
-                    Access your knowledge. Anytime, anywhere.
-                </p>
+                <p className="text-zinc-600 text-sm">Continue learning.</p>
             </div>
 
-            {/* Premium Clerk Card */}
+            {/* Clerk Component with enhanced glass styling */}
             <div className="z-10">
                 <SignIn
                     appearance={{
@@ -50,16 +41,6 @@ export default function SignInPage() {
                         }
                     }}
                 />
-            </div>
-
-            {/* Bottom CTA */}
-            <div className="z-10">
-                <p className="text-sm text-zinc-500 text-center">
-                    New to Thesis?{" "}
-                    <Link href="/waitlist" className="font-semibold text-zinc-900 underline decoration-black/20 underline-offset-4 hover:decoration-black/40">
-                        Join the waitlist
-                    </Link>
-                </p>
             </div>
         </div>
     );
