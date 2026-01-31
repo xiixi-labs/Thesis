@@ -121,7 +121,7 @@ export default function Home() {
               className="mt-16 text-sm text-zinc-500 opacity-0 animate-fade-in-up"
               style={{ animationDelay: "500ms" }}
             >
-              Students and individuals coming soon.
+              Personal learning coming soon.
             </p>
           </section>
 
@@ -130,7 +130,7 @@ export default function Home() {
 
 
           {/* Who it's for - moved above features for better narrative flow */}
-          <section id="who-its-for" className="mt-20">
+          <section id="who-its-for" className="mt-24">
             <div className="rounded-[2rem] border border-black/10 bg-white/70 p-8 shadow-[0_18px_60px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
                 For personal learning and teams.
@@ -207,7 +207,7 @@ export default function Home() {
               </div>
 
               {/* Card 3: Security */}
-              <div className="md:col-span-4 bg-white/60 border border-black/5 rounded-[2rem] p-8 flex items-center justify-center shadow-sm backdrop-blur-3xl min-h-[200px]">
+              <div className="md:col-span-4 bg-white/70 border border-black/10 rounded-[2rem] p-8 flex items-center justify-center shadow-sm backdrop-blur-3xl min-h-[200px]">
                 <div className="text-center">
                   <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
@@ -217,7 +217,7 @@ export default function Home() {
               </div>
 
               {/* Card 4: Citations */}
-              <div className="md:col-span-8 bg-gradient-to-br from-indigo-50 to-purple-50 border border-black/5 rounded-[2rem] p-8 shadow-sm relative overflow-hidden flex flex-col justify-center">
+              <div className="md:col-span-8 bg-gradient-to-br from-indigo-50 to-purple-50 border border-black/10 rounded-[2rem] p-8 shadow-sm relative overflow-hidden flex flex-col justify-center">
                 <div className="max-w-md relative z-10">
                   <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Citations included.</h3>
                   <p className="text-zinc-600 mb-6">Every answer links back to the exact page in your source document.</p>
@@ -238,7 +238,7 @@ export default function Home() {
             <div className="rounded-[2rem] border border-black/10 bg-white/65 p-8 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
+                  <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
                     Built with enterprise constraints in mind.
                   </h2>
                   <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600">
@@ -247,7 +247,7 @@ export default function Home() {
                 </div>
                 <div className="w-fit self-center rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10 md:self-auto">
                   <a
-                    className="inline-flex h-10 items-center justify-center rounded-full bg-white/95 px-5 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-5 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
                     href="/waitlist"
                   >
                     Talk to sales
@@ -277,7 +277,7 @@ export default function Home() {
                 Team plans. Start small, upgrade when you&apos;re ready, and keep enterprise controls available from day one.
               </p>
               <p className="mt-2 text-sm text-zinc-600">
-                Individuals: coming soon — <a className="font-semibold text-zinc-900 underline decoration-black/20 underline-offset-4 hover:decoration-black/40" href="/waitlist">join the waitlist</a>.
+                Personal learning: coming soon — <a className="font-semibold text-zinc-900 underline decoration-black/20 underline-offset-4 hover:decoration-black/40" href="/waitlist">join the waitlist</a>.
               </p>
             </div>
 
