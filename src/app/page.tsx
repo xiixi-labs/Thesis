@@ -401,10 +401,10 @@ export default function Home() {
         <footer className="relative z-10 border-t border-black/5 bg-white/30 backdrop-blur-sm">
           <div className="mx-auto max-w-6xl px-6 py-10">
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-              <div className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2 transition hover:opacity-80">
                 <LogoMark className="h-6 w-6" gradientId="footerLogo" />
                 <span className="text-sm font-medium text-zinc-600">Thesis</span>
-              </div>
+              </Link>
               <p className="text-sm text-zinc-500">
                 © {new Date().getFullYear()} Thesis. Learn Anything.
               </p>
