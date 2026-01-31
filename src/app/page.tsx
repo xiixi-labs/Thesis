@@ -133,7 +133,7 @@ export default function Home() {
           <section id="who-its-for" className="mt-20">
             <div className="rounded-[2rem] border border-black/10 bg-white/70 p-8 shadow-[0_18px_60px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
-                For teams and individual learners.
+                For personal learning and teams.
               </h2>
               <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
                 Same core idea: upload what you have, ask what you need, and get answers you can trust.
@@ -141,7 +141,7 @@ export default function Home() {
 
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
-                  <div className="text-sm font-semibold text-zinc-950">Individuals & Students</div>
+                  <div className="text-sm font-semibold text-zinc-950">Personal Learning</div>
                   <div className="mt-2 text-sm leading-6 text-zinc-700">
                     Turn readings, slides, and notes into study guides, quick summaries, and cited answers.
                   </div>
@@ -150,7 +150,7 @@ export default function Home() {
                     <li>Cite exact pages/slides for assignments</li>
                     <li>Keep a clean personal knowledge library</li>
                   </ul>
-                  <div className="mt-4 text-xs text-zinc-500">Individual plans coming soon.</div>
+                  <div className="mt-4 text-xs text-zinc-500">Personal plans coming soon.</div>
                 </div>
 
                 <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
