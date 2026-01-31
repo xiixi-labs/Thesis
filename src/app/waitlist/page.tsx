@@ -97,15 +97,15 @@ export default function WaitlistPage() {
 				</Link>
 			</header>
 
-			<div className="flex-1 flex flex-col justify-center pt-24 px-6 md:px-24 max-w-5xl mx-auto w-full relative z-10">
-				<div className="text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-6">Thesis + Gemini</div>
-				<h1 className="text-6xl md:text-8xl font-semibold text-zinc-950 tracking-tight leading-[1.1]">
+			<div className="flex-1 flex flex-col justify-center pt-16 md:pt-24 px-6 md:px-24 max-w-5xl mx-auto w-full relative z-10">
+				<div className="text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-3 md:mb-6">Thesis + Gemini</div>
+				<h1 className="text-4xl md:text-8xl font-semibold text-zinc-950 tracking-tight leading-[1.1]">
 					Your files are<br />
 					waiting to speak.
 				</h1>
 			</div>
 
-			<div className="w-full bg-white/60 backdrop-blur-2xl border-t border-black/10 p-6 md:p-12 mt-12 pb-24 relative z-10">
+			<div className="w-full bg-white/60 backdrop-blur-2xl border-t border-black/10 p-4 md:p-12 mt-6 md:mt-12 pb-6 md:pb-24 relative z-10">
 				<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center px-2 md:px-6">
 					<div className="flex-1">
 						<h3 className="text-2xl font-semibold text-zinc-950 mb-2">Start the conversation.</h3>
