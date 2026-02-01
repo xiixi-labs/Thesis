@@ -72,27 +72,35 @@ export default function Home() {
 
       <div className="relative bg-[#fbfbfd] pt-16">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Vibrant Ambient Glow - Extended */}
-          <div className="pointer-events-none absolute left-1/2 top-[-12rem] h-[38rem] w-[58rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.45),rgba(255,255,255,0)_60%)] blur-[80px]" />
-          <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.4),rgba(255,255,255,0)_55%)] blur-[80px]" />
-          <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[20rem] w-[20rem] md:h-[36rem] md:w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.45),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[22rem] w-[22rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.4),rgba(255,255,255,0)_58%)] blur-[90px]" />
-          <div className="pointer-events-none absolute left-[12%] top-[24rem] h-[16rem] w-[16rem] md:h-[28rem] md:w-[28rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.35),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[8%] top-[32rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.35),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          {/* Vibrant Ambient Glow - Extended with enhanced opacity */}
+          <div className="pointer-events-none absolute left-1/2 top-[-12rem] h-[38rem] w-[58rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.55),rgba(255,255,255,0)_60%)] blur-[80px]" />
+          <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.55),rgba(255,255,255,0)_55%)] blur-[80px]" />
+          <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[20rem] w-[20rem] md:h-[36rem] md:w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[22rem] w-[22rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.55),rgba(255,255,255,0)_58%)] blur-[90px]" />
+          <div className="pointer-events-none absolute left-[12%] top-[24rem] h-[16rem] w-[16rem] md:h-[28rem] md:w-[28rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute right-[8%] top-[32rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
 
 
           {/* Lower page ambient glow for continuity */}
-          <div className="pointer-events-none absolute left-[-10%] top-[60rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.3),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[-5%] top-[70rem] h-[20rem] w-[20rem] md:h-[32rem] md:w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute left-[-10%] top-[60rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute right-[-5%] top-[70rem] h-[20rem] w-[20rem] md:h-[32rem] md:w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
 
 
           {/* Mid-page ambient glow for Features & How it works */}
-          <div className="pointer-events-none absolute right-[-10%] top-[40%] h-[30rem] w-[30rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.4),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute left-[-5%] top-[55%] h-[32rem] w-[32rem] md:h-[35rem] md:w-[35rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.4),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute right-[-10%] top-[40%] h-[30rem] w-[30rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute left-[-5%] top-[55%] h-[32rem] w-[32rem] md:h-[35rem] md:w-[35rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
 
           {/* Lower-page ambient glow for Pricing & FAQ */}
-          <div className="pointer-events-none absolute right-[10%] top-[75%] h-[34rem] w-[34rem] md:h-[45rem] md:w-[45rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.35),rgba(255,255,255,0)_60%)] blur-[100px]" />
-          <div className="pointer-events-none absolute left-[5%] top-[90%] h-[30rem] w-[30rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.4),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute right-[10%] top-[75%] h-[34rem] w-[34rem] md:h-[45rem] md:w-[45rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.55),rgba(255,255,255,0)_60%)] blur-[100px]" />
+          <div className="pointer-events-none absolute left-[5%] top-[90%] h-[30rem] w-[30rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          {/* Salt-and-pepper grain texture overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 1 1 1 0 0 0'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 1'/%3E%3CfeFuncG type='discrete' tableValues='0 1'/%3E%3CfeFuncB type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              backgroundSize: '200px 200px'
+            }}
+          />
         </div>
 
         <main className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-10">
@@ -601,23 +609,7 @@ export default function Home() {
               </div>
 
               {/* Newsletter Column */}
-              <div>
-                <h3 className="text-sm font-semibold text-zinc-950">Stay Updated</h3>
-                <p className="mt-4 text-sm text-zinc-600">Get product updates and announcements.</p>
-                <form className="mt-3 flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="h-9 flex-1 rounded-lg border border-zinc-200 bg-white/90 px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30"
-                  />
-                  <button
-                    type="submit"
-                    className="h-9 rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800"
-                  >
-                    Subscribe
-                  </button>
-                </form>
-              </div>
+              <NewsletterForm />
             </div>
 
             {/* Bottom Bar */}
@@ -662,6 +654,95 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           {answer}
         </div>
       </div>
+    </div>
+  );
+}
+
+function NewsletterForm() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("loading");
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setStatus("error");
+        setMessage(data.error);
+      } else {
+        setStatus("success");
+        setMessage("Thanks for subscribing!");
+        (e.target as HTMLFormElement).reset();
+      }
+    } catch (error) {
+      setStatus("error");
+      setMessage("Something went wrong. Please try again.");
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div>
+        <h3 className="text-sm font-semibold text-zinc-950">Stay Updated</h3>
+        <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+          <div className="flex items-center gap-2 text-sm text-emerald-700">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            {message}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-zinc-950">Stay Updated</h3>
+      <p className="mt-4 text-sm text-zinc-600">Get product updates and announcements.</p>
+      <form onSubmit={handleSubmit} className="mt-3 grid grid-cols-2 gap-2 w-full">
+        <input
+          name="firstName"
+          type="text"
+          placeholder="First name"
+          required
+          className="h-8 w-full rounded-lg border border-zinc-200 bg-white/90 px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30 min-w-0"
+        />
+        <input
+          name="lastName"
+          type="text"
+          placeholder="Last name"
+          required
+          className="h-8 w-full rounded-lg border border-zinc-200 bg-white/90 px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30 min-w-0"
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="your@email.com"
+          required
+          className="h-8 w-full rounded-lg border border-zinc-200 bg-white/90 px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30 min-w-0"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="h-8 w-full rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+        >
+          {status === "loading" ? "..." : "Subscribe"}
+        </button>
+        {status === "error" && (
+          <p className="col-span-2 text-xs text-red-600">{message}</p>
+        )}
+      </form>
     </div>
   );
 }
