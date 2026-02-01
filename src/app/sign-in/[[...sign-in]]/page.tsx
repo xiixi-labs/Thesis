@@ -60,7 +60,7 @@ export default function SignInPage() {
             {/* Main Split Layout */}
             <div className="relative z-10 flex flex-col md:grid md:min-h-[calc(100vh-88px)] md:grid-cols-2">
                 {/* Sign-In Card Panel - First on Mobile, Second on Desktop */}
-                <div className="order-1 md:order-2 flex items-center justify-center px-8 py-12 md:px-16">
+                <div className="order-1 md:order-2 flex items-center justify-center px-4 py-12 md:px-16">
                     <div
                         className="w-full max-w-md opacity-0"
                         style={{ animation: 'slide-up 0.9s ease-out 0.5s forwards' }}
@@ -76,7 +76,7 @@ export default function SignInPage() {
                                     socialButtonsBlockButtonText: "font-medium text-sm",
                                     socialButtonsIconButton: "rounded-2xl",
                                     formFieldLabel: "text-zinc-700 font-semibold text-sm mb-2",
-                                    formFieldInput: "bg-white/90 border-zinc-200 focus:border-indigo-400 focus:ring-indigo-400/30 text-zinc-900 rounded-2xl h-11 md:h-12 transition-all backdrop-blur-sm font-medium placeholder:text-zinc-400",
+                                    formFieldInput: "bg-white/90 border-zinc-200 focus:border-indigo-400 focus:ring-indigo-400/30 text-zinc-900 rounded-2xl h-11 md:h-12 transition-all backdrop-blur-sm font-medium placeholder:text-zinc-400 text-base md:text-sm",
                                     formFieldInputShowPasswordButton: "text-zinc-500 hover:text-zinc-700",
                                     footerActionLink: "text-indigo-600 hover:text-indigo-700 font-semibold",
                                     formButtonPrimary: "bg-gradient-to-br from-zinc-900 to-zinc-800 hover:from-zinc-800 hover:to-zinc-700 text-white rounded-2xl h-11 md:h-12 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-[1.01] font-semibold",

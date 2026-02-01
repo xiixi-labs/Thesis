@@ -13,8 +13,21 @@ export function TheaMark({
 
 	return (
 		<div className={`relative isolate inline-flex aspect-square items-center justify-center ${className ?? ""}`.trim()}>
-			{/* Background Aura (Sharp & Close) */}
-			<div className="absolute inset-[-10%] -z-20 rounded-full bg-indigo-500/30 blur-lg" />
+			{/* Dynamic Color Match Shadow Aura */}
+			<div className="absolute inset-0 -z-20 blur-xl opacity-80 scale-110">
+				<div className="h-full w-full rounded-full overflow-hidden relative">
+					<div className="absolute inset-0 motion-safe:animate-spin motion-safe:[animation-duration:20s]">
+						{/* 1. Cyan Blob (Top Left) */}
+						<div className="absolute -top-[10%] -left-[10%] h-[70%] w-[70%] rounded-full bg-cyan-500" />
+						{/* 2. Rose Blob (Bottom Right) */}
+						<div className="absolute -bottom-[10%] -right-[10%] h-[70%] w-[70%] rounded-full bg-rose-500" />
+						{/* 3. Amber/Orange Blob (Bottom Left) */}
+						<div className="absolute -bottom-[5%] -left-[5%] h-[60%] w-[60%] rounded-full bg-amber-500" />
+						{/* 4. Violet Blob (Top Right) */}
+						<div className="absolute -top-[5%] -right-[5%] h-[60%] w-[60%] rounded-full bg-indigo-600" />
+					</div>
+				</div>
+			</div>
 
 			{/* Main container with mask - The Brain Shape */}
 			<div

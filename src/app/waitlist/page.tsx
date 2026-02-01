@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { joinWaitlist } from '@/app/actions/waitlist';
-import { LogoMark } from '@/components/LogoMark';
+
 
 // --- SHARED COMPONENTS ---
 
@@ -53,7 +53,7 @@ const ThesisInput = ({ name, placeholder, type = "text", className = "", require
 		type={type}
 		required={required}
 		placeholder={placeholder}
-		className={`h-12 w-full rounded-2xl border border-zinc-200 bg-white/90 px-4 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/30 backdrop-blur-sm transition-all hover:bg-white ${className}`}
+		className={`h-12 w-full rounded-2xl border border-zinc-200 bg-white/90 px-4 text-base md:text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/30 backdrop-blur-sm transition-all hover:bg-white ${className}`}
 	/>
 );
 
@@ -83,15 +83,16 @@ const WaitlistForm = ({ layout = "stack", buttonText = "Join Waitlist" }: { layo
 		}
 	}
 
+
 	if (status === "success") {
 		return (
-			<div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6 text-center shadow-sm backdrop-blur-xl">
-				<div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+			<div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6 text-center shadow-sm backdrop-blur-xl animate-fade-in-up">
+				<div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 animate-scale-in">
 					<svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
 				</div>
 				<h3 className="text-lg font-semibold text-emerald-900">You're in!</h3>
 				<p className="text-sm text-emerald-700">{message}</p>
-				<button onClick={() => setStatus("idle")} className="mt-4 text-xs font-medium text-emerald-600 underline hover:text-emerald-800">
+				<button onClick={() => setStatus("idle")} className="mt-4 text-xs font-medium text-emerald-600 underline hover:text-emerald-800 transition">
 					Add another email
 				</button>
 			</div>
@@ -108,7 +109,15 @@ const WaitlistForm = ({ layout = "stack", buttonText = "Join Waitlist" }: { layo
 			<ThesisInput name="phone" placeholder="Phone (Optional)" type="tel" />
 
 			<ThesisButton disabled={status === "loading"} className="mt-2 w-full">
-				{status === "loading" ? "Joining..." : buttonText}
+				{status === "loading" ? (
+					<div className="flex items-center justify-center gap-2">
+						<svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+							<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+							<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+						</svg>
+						Joining...
+					</div>
+				) : buttonText}
 			</ThesisButton>
 
 			{status === "error" && (
@@ -126,9 +135,14 @@ export default function WaitlistPage() {
 					className="opacity-0"
 					style={{ animation: 'fade-in 0.8s ease-out 0.2s forwards' }}
 				>
-					<Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-						<LogoMark className="h-8 w-8" gradientId="waitlistLogo" />
-						<span className="font-semibold text-zinc-950">Thesis</span>
+					<Link
+						href="/"
+						className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-zinc-900"
+					>
+						<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+						</svg>
+						Back
 					</Link>
 				</div>
 			</header>
