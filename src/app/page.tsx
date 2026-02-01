@@ -150,40 +150,79 @@ export default function Home() {
 
 
           {/* Who it's for - moved above features for better narrative flow */}
-          <section id="who-its-for" className="mt-24">
-            <div className="rounded-[2rem] border border-black/10 bg-white/70 p-8 shadow-[0_18px_60px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
-              <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
+          <section id="who-its-for" className="mt-32">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-zinc-950 mb-4">
                 For personal learning and teams.
               </h2>
-              <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
+              <p className="mt-4 max-w-3xl mx-auto text-lg leading-8 text-zinc-600">
                 Same core idea: upload what you have, ask what you need, and get answers you can trust.
               </p>
+            </div>
 
-              <div className="mt-8 grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
-                  <div className="text-sm font-semibold text-zinc-950">Personal Learning</div>
-                  <div className="mt-2 text-sm leading-6 text-zinc-700">
-                    Turn readings, slides, and notes into study guides, quick summaries, and cited answers.
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
+                {/* Icon and Header on same line */}
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
+                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
                   </div>
-                  <ul className="mt-4 space-y-2 text-sm text-zinc-700">
-                    <li>Ask questions across PDFs, lectures, and notes</li>
-                    <li>Cite exact pages/slides for assignments</li>
-                    <li>Keep a clean personal knowledge library</li>
-                  </ul>
-                  <div className="mt-4 text-xs text-zinc-500">Personal plans coming soon.</div>
+                  <h3 className="text-lg font-semibold text-zinc-950">Personal Learning</h3>
                 </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/80">
-                  <div className="text-sm font-semibold text-zinc-950">Teams</div>
-                  <div className="mt-2 text-sm leading-6 text-zinc-700">
-                    Keep knowledge centralized and auditable—from onboarding docs to policies and training.
-                  </div>
-                  <ul className="mt-4 space-y-2 text-sm text-zinc-700">
-                    <li>Shared workspace with role-based access</li>
-                    <li>Grounded answers with citations + audit trail</li>
-                    <li>Multi-tenant architecture and isolation</li>
-                  </ul>
+                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
+                  Turn readings, slides, and notes into study guides, quick summaries, and cited answers.
+                </p>
+
+                <ul className="space-y-2 text-sm text-zinc-700 mb-6">
+                  <li>Ask questions across PDFs, lectures, and notes</li>
+                  <li>Cite exact pages/slides for assignments</li>
+                  <li>Keep a clean personal knowledge library</li>
+                </ul>
+
+                <div className="mt-auto inline-flex items-center gap-2 text-xs font-medium text-zinc-500">
+                  <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                  Personal plans coming soon
                 </div>
+
+                {/* Subtle background decoration */}
+                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
+              </div>
+
+              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
+                {/* Icon and Header on same line */}
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
+                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-zinc-950">Teams</h3>
+                </div>
+
+                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
+                  Keep knowledge centralized and auditable—from onboarding docs to policies and training.
+                </p>
+
+                <ul className="space-y-2 text-sm text-zinc-700 mb-6">
+                  <li>Shared workspace with role-based access</li>
+                  <li>Grounded answers with citations + audit trail</li>
+                  <li>Multi-tenant architecture and isolation</li>
+                </ul>
+
+                <div className="mt-auto">
+                  <a href="/waitlist" className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-900 hover:text-zinc-700 transition">
+                    Get started
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+
+                {/* Subtle background decoration */}
+                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
               </div>
             </div>
           </section>
@@ -195,79 +234,93 @@ export default function Home() {
               <p className="mt-3 text-lg text-zinc-600">Upload, ask, and get cited answers.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              {/* Card 1: Upload */}
-              <div className="md:col-span-7 bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Drag & Drop Ingestion</h3>
-                  <p className="text-zinc-600">Support for PDF, DOCX, CSV, and PPTX.</p>
-                </div>
-                <div className="mt-8 h-32 border-2 border-dashed border-zinc-300 rounded-xl flex items-center justify-center text-zinc-400 bg-white/50">
-                  Drop zone
-                </div>
-              </div>
-
-              {/* Card 2: Thea */}
-              <div className="md:col-span-5 bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition backdrop-blur-3xl relative overflow-hidden group min-h-[300px]">
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Meet Thea</h3>
-                  <p className="text-zinc-600">Your AI Research Assistant.</p>
-                </div>
-
-                <div className="absolute right-[-2rem] bottom-[-2rem] opacity-90 transition-transform duration-700 group-hover:scale-110">
-                  <TheaMark className="h-48 w-48" />
-                </div>
-
-                <div className="relative z-10 mt-auto self-start">
-                  <button className="bg-white/50 backdrop-blur-md border border-black/5 px-5 py-2.5 rounded-full text-sm font-medium text-zinc-900 shadow-sm hover:bg-white/80 transition flex items-center gap-2">
-                    Start Chat
-                    <span className="text-xs text-zinc-500">→</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Card 3: Security */}
-              <div className="md:col-span-4 bg-white/70 border border-black/10 rounded-[2rem] p-8 flex items-center justify-center shadow-sm backdrop-blur-3xl min-h-[200px]">
-                <div className="text-center">
-                  <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Step 1: Ingestion */}
+              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
+                {/* Icon and Header on same line */}
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
+                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
                   </div>
-                  <h3 className="font-semibold text-lg text-zinc-950">Enterprise Security</h3>
+                  <h3 className="text-lg font-semibold text-zinc-950">Secure Ingestion</h3>
+                </div>
+                <p className="text-zinc-600 leading-relaxed text-sm">
+                  Drag and drop your PDFs, docs, and slides. We encrypt, process, and index your knowledge base instantly, creating a private understanding of your work.
+                </p>
+
+                {/* Subtle background decoration */}
+                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
+              </div>
+
+              {/* Step 2: Reasoning */}
+              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
+                {/* Icon and Header on same line */}
+                <div className="mb-6 flex items-center gap-4 relative z-10">
+                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
+                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-zinc-950">Neural Analysis</h3>
+                </div>
+                <p className="text-zinc-600 leading-relaxed text-sm relative z-10">
+                  Thea reads every sentence, connecting concepts across documents to build a contextual map of your information—without you lifting a finger.
+                </p>
+
+                {/* Vibrant Thea Orb - NO opacity reduction */}
+                <div className="absolute right-[-2.5rem] bottom-[-2.5rem] transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12">
+                  <TheaMark className="h-40 w-40" />
                 </div>
               </div>
 
-              {/* Card 4: Citations */}
-              <div className="md:col-span-8 bg-gradient-to-br from-indigo-50 to-purple-50 border border-black/10 rounded-[2rem] p-8 shadow-sm relative overflow-hidden flex flex-col justify-center">
-                <div className="max-w-md relative z-10">
-                  <h3 className="text-2xl font-semibold mb-2 text-zinc-950">Citations included.</h3>
-                  <p className="text-zinc-600 mb-6">Every answer links back to the exact page in your source document.</p>
-                  <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10 w-fit">
-                    <a
-                      className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                      href="/waitlist"
-                    >
-                      Try it now
-                    </a>
+              {/* Step 3: Synthesis */}
+              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
+                {/* Icon and Header on same line */}
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
+                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
+                  <h3 className="text-lg font-semibold text-zinc-950">Cited Retrieval</h3>
                 </div>
+
+                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
+                  Ask complex questions and receive complete answers. Every claim is backed by a direct, clickable citation to the exact source page.
+                </p>
+
+                {/* CTA for flow completion */}
+                <div className="mt-auto">
+                  <a href="/waitlist" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700 group/link">
+                    Start Researching
+                    <svg className="h-4 w-4 transition-transform group-hover/link:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </a>
+                </div>
+
+                {/* Subtle background decoration */}
+                <div className="absolute left-[-30px] bottom-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-emerald-200/30 to-transparent blur-3xl" />
               </div>
             </div>
           </section>
 
           <section id="security" className="mt-24">
-            <div className="rounded-[2rem] border border-black/10 bg-white/65 p-8 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="rounded-[2rem] border border-black/10 bg-white/65 p-10 md:p-12 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
+                  <h2 className="text-3xl font-semibold tracking-tight text-zinc-950">
                     Built with enterprise constraints in mind.
                   </h2>
-                  <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600">
+                  <p className="mt-3 max-w-3xl text-base leading-7 text-zinc-600">
                     Keep tenant data isolated, minimize what&apos;s sent to the model, and maintain auditability from day one.
                   </p>
                 </div>
-                <div className="w-fit self-center rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10 md:self-auto">
+                <div className="w-fit self-center rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10 md:self-auto flex-shrink-0">
                   <a
-                    className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-5 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
                     href="/waitlist"
                   >
                     Talk to sales
@@ -275,132 +328,193 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="rounded-2xl border border-black/10 bg-white/65 p-4 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:bg-white/80">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    <div className="text-sm font-semibold text-zinc-950">SOC 2 Type 2 Infrastructure</div>
+              <div className="mt-10 grid gap-6 md:grid-cols-3">
+                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:shadow-md hover:bg-white/80 group">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <svg className="h-6 w-6 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">SOC 2 Type 2 Infrastructure</div>
+                      <p className="text-sm leading-6 text-zinc-600">
+                        Built on enterprise-grade infrastructure verified for security, availability, and confidentiality.
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs leading-5 text-zinc-600">
-                    Built on enterprise-grade infrastructure verified for security, availability, and confidentiality.
-                  </p>
                 </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white/65 p-4 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:bg-white/80">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
-                    <div className="text-sm font-semibold text-zinc-950">End-to-End Encryption</div>
+                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:shadow-md hover:bg-white/80 group">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <svg className="h-6 w-6 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">End-to-End Encryption</div>
+                      <p className="text-sm leading-6 text-zinc-600">
+                        Data is encrypted at rest (AES-256) and in transit (TLS 1.3). Your knowledge base is private by default.
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs leading-5 text-zinc-600">
-                    Data is encrypted at rest (AES-256) and in transit (TLS 1.3). Your knowledge base is private by default.
-                  </p>
                 </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white/65 p-4 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:bg-white/80">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="h-2 w-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                    <div className="text-sm font-semibold text-zinc-950">HIPAA & GDPR Ready</div>
+                <div className="rounded-2xl border border-black/10 bg-white/65 p-6 backdrop-blur-2xl shadow-sm shadow-zinc-900/5 transition hover:shadow-md hover:bg-white/80 group">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <svg className="h-6 w-6 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">HIPAA & GDPR Ready</div>
+                      <p className="text-sm leading-6 text-zinc-600">
+                        Architecture designed to support Business Associate Agreements (BAA) and data residency requirements.
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs leading-5 text-zinc-600">
-                    Architecture designed to support Business Associate Agreements (BAA) and data residency requirements.
-                  </p>
                 </div>
               </div>
             </div>
           </section>
 
           <section id="pricing" className="mt-24">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">Pricing</h2>
-              <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-4xl font-semibold tracking-tight text-zinc-950 mb-4">Pricing</h2>
+              <p className="text-lg leading-8 text-zinc-600">
                 Team plans. Start small, upgrade when you&apos;re ready, and keep enterprise controls available from day one.
               </p>
-              <p className="mt-2 text-sm text-zinc-600">
-                Personal learning: coming soon — <a className="font-semibold text-zinc-900 underline decoration-black/20 underline-offset-4 hover:decoration-black/40" href="/waitlist">join the waitlist</a>.
-              </p>
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm">
+                <span className="text-zinc-500">Personal learning: coming soon —</span>
+                <a className="font-semibold text-zinc-900 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900 transition" href="/waitlist">
+                  join the waitlist
+                </a>
+              </div>
             </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-3">
               {/* Startup */}
-              <div className="rounded-[2rem] border border-black/10 bg-white/70 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
-                <div className="text-sm font-semibold text-zinc-950">Start-Up</div>
-                <div className="mt-3 flex items-end gap-2">
-                  <div className="text-4xl font-semibold tracking-tight text-zinc-950">$250</div>
-                  <div className="pb-1 text-sm text-zinc-600">/ month</div>
+              <div className="bg-white/60 border border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl relative overflow-hidden group hover:shadow-md transition-all duration-500">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Start-Up</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-zinc-900">$250</span>
+                    <span className="text-zinc-500">/month</span>
+                  </div>
+                  <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
+                    Perfect for small teams getting started with AI-powered research.
+                  </p>
                 </div>
-                <div className="mt-2 text-sm text-zinc-600">Up to 10 users</div>
 
-                <ul className="mt-6 space-y-2 text-sm text-zinc-700">
-                  <li>Document + note ingestion</li>
-                  <li>Answers with citations</li>
-                  <li>Org-level workspace</li>
-                </ul>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Features</div>
+                  <ul className="space-y-3">
+                    {[
+                      "Up to 10 users",
+                      "Document + note ingestion",
+                      "Answers with citations",
+                      "Org-level workspace"
+                    ].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
+                        <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                <div className="mt-7 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
-                  <a
-                    className="inline-flex h-11 w-full items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                    href="/waitlist"
-                  >
-                    Join the waitlist
+                <div className="mt-10">
+                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
+                    Join waitlist
                   </a>
                 </div>
               </div>
 
               {/* Business */}
-              <div className="relative rounded-[2rem] p-[1px] shadow-[0_28px_90px_-30px_rgba(0,0,0,0.3)] transition hover:-translate-y-1">
-                {/* Gradient Border */}
-                <div className="absolute inset-0 rounded-[2rem] bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] opacity-60" />
+              <div className="bg-white/70 border border-black/10 rounded-[2.5rem] p-10 flex flex-col shadow-xl backdrop-blur-3xl relative overflow-hidden group hover:shadow-2xl hover:scale-[1.02] transition-all duration-500">
+                <div className="absolute top-6 right-6">
+                  <span className="inline-flex items-center rounded-full bg-zinc-900/5 border border-black/5 px-3 py-1 text-xs font-medium text-zinc-900 backdrop-blur-sm">
+                    Most popular
+                  </span>
+                </div>
 
-                <div className="relative h-full rounded-[2rem] bg-white/75 p-7 backdrop-blur-3xl">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm font-semibold text-zinc-950">Business</div>
-                    <span className="rounded-full border border-black/5 bg-zinc-900/5 px-2.5 py-1 text-xs font-semibold text-zinc-900 backdrop-blur-md">
-                      Most popular
-                    </span>
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Business</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-zinc-900">$500</span>
+                    <span className="text-zinc-500">/month</span>
                   </div>
-                  <div className="mt-3 flex items-end gap-2">
-                    <div className="text-4xl font-semibold tracking-tight text-zinc-950">$500</div>
-                    <div className="pb-1 text-sm text-zinc-600">/ month</div>
-                  </div>
-                  <div className="mt-2 text-sm text-zinc-600">Up to 50 users</div>
+                  <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
+                    For growing teams requiring advanced controls and support.
+                  </p>
+                </div>
 
-                  <ul className="mt-6 space-y-2 text-sm text-zinc-700">
-                    <li>Everything in Start-Up</li>
-                    <li>Admin controls + role gating</li>
-                    <li>Priority support</li>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Start-Up, plus:</div>
+                  <ul className="space-y-3">
+                    {[
+                      "Up to 50 users",
+                      "Admin controls + role gating",
+                      "Priority support",
+                      "Advanced analytics"
+                    ].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
+                        <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
                   </ul>
+                </div>
 
-                  <div className="mt-7 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
-                    <a
-                      className="inline-flex h-11 w-full items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                      href="/waitlist"
-                    >
-                      Join the waitlist
-                    </a>
-                  </div>
+                <div className="mt-10">
+                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
+                    Join waitlist
+                  </a>
                 </div>
               </div>
 
               {/* Enterprise */}
-              <div className="rounded-[2rem] border border-black/10 bg-white/70 p-7 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.20)] backdrop-blur-3xl">
-                <div className="text-sm font-semibold text-zinc-950">Enterprise</div>
-                <div className="mt-3 flex items-end gap-2">
-                  <div className="text-4xl font-semibold tracking-tight text-zinc-950">Custom</div>
+              <div className="bg-white/60 border border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl relative overflow-hidden group hover:shadow-md transition-all duration-500">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Enterprise</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-zinc-900">Custom</span>
+                  </div>
+                  <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
+                    Custom solutions for large organizations with specific needs.
+                  </p>
                 </div>
-                <div className="mt-2 text-sm text-zinc-600">Unlimited users</div>
 
-                <ul className="mt-6 space-y-2 text-sm text-zinc-700">
-                  <li>SAML / SSO</li>
-                  <li>Advanced governance + audit</li>
-                  <li>Dedicated onboarding</li>
-                </ul>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Business, plus:</div>
+                  <ul className="space-y-3">
+                    {[
+                      "Unlimited users",
+                      "SAML / SSO",
+                      "Advanced governance + audit",
+                      "Dedicated onboarding"
+                    ].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
+                        <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                <a
-                  className="mt-7 inline-flex h-11 w-full items-center justify-center rounded-full border border-black/10 bg-white/40 px-6 text-sm font-semibold text-zinc-900 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/55"
-                  href="/waitlist"
-                >
-                  Contact sales
-                </a>
+                <div className="mt-10">
+                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-zinc-900 text-sm font-semibold text-white text-center shadow-lg hover:bg-zinc-800 transition-all duration-300">
+                    Contact sales
+                  </a>
+                </div>
               </div>
             </div>
           </section>
