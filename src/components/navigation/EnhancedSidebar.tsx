@@ -73,9 +73,7 @@ export function EnhancedSidebar({ onMobileClose, isMobile = false }: EnhancedSid
       {/* Header with Logo and Org Name */}
       <div className="border-b border-black/5 px-6 py-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-            <LogoMark className="h-6 w-6 text-white" />
-          </div>
+          <LogoMark className="h-8 w-8" />
           <div className="flex-1 min-w-0">
             <h2 className="text-base font-semibold text-zinc-900 truncate">Thesis</h2>
             <p className="text-xs text-zinc-500 truncate">Your library</p>

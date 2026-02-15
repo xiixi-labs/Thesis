@@ -8,11 +8,13 @@ import { getConversations, deleteConversation, updateConversationTitle, type Cha
 export function ChatSidebar({
     onSelect,
     activeId,
-    onNewChat
+    onNewChat,
+    className
 }: {
     onSelect: (id: string) => void,
     activeId: string | null,
-    onNewChat: () => void
+    onNewChat: () => void,
+    className?: string
 }) {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export function ChatSidebar({
     };
 
     return (
-        <div className="flex w-[260px] flex-col border-r border-black/5 bg-zinc-50/80 pt-4 hidden md:flex h-full backdrop-blur-xl">
+        <div className={`flex w-[260px] flex-col border-r border-black/5 bg-zinc-50/80 pt-4 hidden md:flex h-full backdrop-blur-xl ${className || ''}`}>
             <div className="px-3 mb-2">
                 <button
                     onClick={onNewChat}

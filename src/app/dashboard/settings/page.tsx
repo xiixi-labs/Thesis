@@ -1,94 +1,253 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useUser, useClerk } from "@clerk/nextjs";
+import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
+import Toggle from "@/components/ui/Toggle";
+
+type Preferences = {
+  emailNotifications: boolean;
+  desktopNotifications: boolean;
+  defaultFolder: string;
+  theme: 'light' | 'dark' | 'system';
+};
+
 export default function SettingsPage() {
-  const sections: {
-    name: string;
-    description: string;
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  }[] = [
-      { name: "General", description: "Organization profile and branding", icon: CogIcon },
-      { name: "Members", description: "Manage access and roles", icon: UsersIcon },
-      { name: "Billing", description: "Plan, invoices, and usage", icon: CreditCardIcon },
-      { name: "Integrations", description: "Connect to Slack, Drive, etc.", icon: SquaresPlusIcon },
-    ];
+  const { user: clerkUser } = useUser();
+  const { accessibleFolders } = useWorkspace();
+  const { signOut } = useClerk();
+
+  const [preferences, setPreferences] = useState<Preferences>({
+    emailNotifications: true,
+    desktopNotifications: false,
+    defaultFolder: '',
+    theme: 'system',
+  });
+
+  const [documentCount, setDocumentCount] = useState(0);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  // Load preferences from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('thesis-preferences');
+    if (saved) {
+      try {
+        setPreferences(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse preferences:', e);
+      }
+    }
+  }, []);
+
+  // Fetch document count
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/documents');
+        if (res.ok) {
+          const data = await res.json();
+          setDocumentCount(data.documents?.length || 0);
+        }
+      } catch (e) {
+        console.error('Failed to fetch stats:', e);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Save preference to localStorage
+  const updatePreference = <K extends keyof Preferences>(key: K, value: Preferences[K]) => {
+    const updated = { ...preferences, [key]: value };
+    setPreferences(updated);
+    localStorage.setItem('thesis-preferences', JSON.stringify(updated));
+  };
+
+  const handleSignOut = () => {
+    if (confirm('Are you sure you want to sign out?')) {
+      signOut();
+    }
+  };
 
   return (
     <div>
+      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-950">Settings</h1>
         <p className="mt-2 text-base text-zinc-600">
-          Manage your organization preferences and configuration.
+          Manage your profile and application preferences.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {sections.map((section) => (
-          <button
-            key={section.name}
-            className="group flex flex-col items-start rounded-2xl border border-black/5 bg-white/60 p-6 text-left shadow-sm backdrop-blur-xl transition hover:bg-white/80 hover:shadow-md"
-          >
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
-              <section.icon className="h-5 w-5" />
-            </div>
-            <div className="font-semibold text-zinc-900">{section.name}</div>
-            <div className="mt-1 text-sm text-zinc-500">{section.description}</div>
-          </button>
-        ))}
-      </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* User Profile */}
+        <div className="rounded-2xl border border-black/5 bg-white/60 p-6 shadow-sm backdrop-blur-xl">
+          <h2 className="text-lg font-semibold text-zinc-900 mb-4">Profile</h2>
 
-      <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/50 p-6">
-        <div className="flex items-start gap-3">
-          <div className="mt-1 text-amber-600">
-            <AlertIcon className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-amber-900">Admin Access Required</div>
-            <div className="mt-1 text-sm text-amber-800/80">
-              Some settings are only visible to organization administrators.
+          <div className="flex items-center gap-4 mb-6">
+            {clerkUser?.imageUrl ? (
+              <img
+                src={clerkUser.imageUrl}
+                alt={clerkUser.fullName || 'User'}
+                className="h-16 w-16 rounded-full object-cover ring-2 ring-white shadow-md"
+              />
+            ) : (
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-2xl font-bold text-white shadow-md">
+                {clerkUser?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+
+            <div className="flex-1">
+              <div className="text-sm font-medium text-zinc-500">Name</div>
+              <div className="text-base font-semibold text-zinc-900">
+                {clerkUser?.fullName || clerkUser?.firstName || 'User'}
+              </div>
             </div>
           </div>
+
+          <div className="space-y-4">
+            <div className="pt-4 border-t border-zinc-100">
+              <div className="text-sm font-medium text-zinc-500">Email</div>
+              <div className="text-base text-zinc-900 mt-1">
+                {clerkUser?.primaryEmailAddress?.emailAddress || 'N/A'}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-zinc-100">
+              <div className="text-sm font-medium text-zinc-500">User ID</div>
+              <div className="text-xs font-mono text-zinc-600 mt-1 break-all">
+                {clerkUser?.id}
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => window.open('https://accounts.thesis.app/user', '_blank')}
+            className="mt-6 w-full px-4 py-2 bg-zinc-900 text-white text-sm font-semibold rounded-lg hover:bg-zinc-800 transition"
+          >
+            Manage Account
+          </button>
+        </div>
+
+        {/* App Preferences */}
+        <div className="rounded-2xl border border-black/5 bg-white/60 p-6 shadow-sm backdrop-blur-xl">
+          <h2 className="text-lg font-semibold text-zinc-900 mb-4">Preferences</h2>
+
+          <div className="space-y-4">
+            {/* Email Notifications */}
+            <div className="flex items-center justify-between py-3">
+              <div>
+                <div className="text-sm font-medium text-zinc-900">Email Notifications</div>
+                <div className="text-xs text-zinc-500">Receive updates about documents and chats</div>
+              </div>
+              <Toggle
+                checked={preferences.emailNotifications}
+                onChange={(checked) => updatePreference('emailNotifications', checked)}
+              />
+            </div>
+
+            {/* Desktop Notifications */}
+            <div className="flex items-center justify-between py-3 border-t border-zinc-100">
+              <div>
+                <div className="text-sm font-medium text-zinc-900">Desktop Notifications</div>
+                <div className="text-xs text-zinc-500">Push notifications for new activity</div>
+              </div>
+              <Toggle
+                checked={preferences.desktopNotifications}
+                onChange={(checked) => updatePreference('desktopNotifications', checked)}
+              />
+            </div>
+
+            {/* Default Upload Folder */}
+            <div className="py-3 border-t border-zinc-100">
+              <label className="text-sm font-medium text-zinc-900 mb-2 block">
+                Default Upload Folder
+              </label>
+              <select
+                value={preferences.defaultFolder}
+                onChange={(e) => updatePreference('defaultFolder', e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-zinc-200 bg-white text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              >
+                <option value="">Ask each time</option>
+                {accessibleFolders.map(f => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Theme Preference */}
+            <div className="py-3 border-t border-zinc-100">
+              <label className="text-sm font-medium text-zinc-900 mb-2 block">
+                Theme
+              </label>
+              <div className="flex gap-2">
+                {(['light', 'dark', 'system'] as const).map(theme => (
+                  <button
+                    key={theme}
+                    onClick={() => updatePreference('theme', theme)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${preferences.theme === theme
+                      ? 'bg-zinc-900 text-white'
+                      : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                      }`}
+                  >
+                    {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-zinc-500">
+                Theme preference saved (visual changes coming soon)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Usage Stats */}
+        <div className="rounded-2xl border border-black/5 bg-white/60 p-6 shadow-sm backdrop-blur-xl">
+          <h2 className="text-lg font-semibold text-zinc-900 mb-4">Usage</h2>
+
+          {isLoadingStats ? (
+            <div className="text-center py-8 text-sm text-zinc-500">Loading stats...</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="text-center p-4 rounded-lg bg-zinc-50">
+                  <div className="text-2xl font-bold text-zinc-900">{documentCount}</div>
+                  <div className="text-xs text-zinc-500 mt-1">Documents</div>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-zinc-50">
+                  <div className="text-2xl font-bold text-zinc-900">{accessibleFolders.length}</div>
+                  <div className="text-xs text-zinc-500 mt-1">Notebooks</div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-zinc-100">
+                <div className="text-sm text-zinc-600">
+                  Member since {clerkUser?.createdAt ? new Date(clerkUser.createdAt).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric'
+                  }) : 'N/A'}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Danger Zone */}
+        <div className="rounded-2xl border border-red-200 bg-red-50/50 p-6">
+          <h2 className="text-lg font-semibold text-red-900 mb-2">Danger Zone</h2>
+          <p className="text-sm text-red-600 mb-4">
+            Irreversible actions that affect your account
+          </p>
+
+          <button
+            onClick={handleSignOut}
+            className="px-4 py-2 bg-white border border-red-300 text-red-700 text-sm font-semibold rounded-lg hover:bg-red-50 transition"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
-function CogIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-    </svg>
-  );
-}
-
-function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-    </svg>
-  );
-}
-
-function CreditCardIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-    </svg>
-  );
-}
-
-function SquaresPlusIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v2.25A2.25 2.25 0 0 0 6 10.5Zm0 9.75h2.25A2.25 2.25 0 0 0 10.5 18v-2.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25V18A2.25 2.25 0 0 0 6 20.25Zm9.75-9.75H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 18 3.75h-2.25A2.25 2.25 0 0 0 13.5 6v2.25a2.25 2.25 0 0 0 2.25 2.25Z" />
-    </svg>
-  );
-}
-
-function AlertIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-    </svg>
-  );
-}
-
