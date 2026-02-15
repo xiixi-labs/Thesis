@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
 import { TheaMark } from "@/components/TheaMark";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
-import { getMessages, type ChatMessage } from "@/app/actions/chat";
+import { getMessages } from "@/app/actions/chat";
 
 type Citation = {
   id: string;
@@ -102,6 +102,9 @@ export default function TheaClient() {
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [sourcesMessageId, setSourcesMessageId] = useState<string | null>(null);
   const [sourcesCitationIdx, setSourcesCitationIdx] = useState(0);
+
+  // Chat history drawer
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Mobile sheet interactions (drag-to-dismiss)
   const [sheetDragY, setSheetDragY] = useState(0);
@@ -326,8 +329,12 @@ export default function TheaClient() {
     });
   };
 
-  const submitMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const query = searchParams.get("q");
+  const hasAutoSent = useRef(false);
+
+  const submitMessage = async (textOverride?: string) => {
+    const textToSend = textOverride || input;
+    if (!textToSend.trim() || isLoading) return;
 
     if (isListening) {
       // Stop listening when user sends.
@@ -342,7 +349,7 @@ export default function TheaClient() {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: input.trim(),
+      content: textToSend.trim(),
     };
 
     // Prepare history for API
@@ -388,15 +395,26 @@ export default function TheaClient() {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Chat error:", e);
 
       // Try to get the actual error message from the API
-      let errorText = "I'm having trouble connecting to the knowledge base right now. Please try again.";
+      let errorText = "I'm having trouble connecting to your library right now. Please try again.";
+      if (e instanceof Error && e.message) {
+        errorText = e.message;
+      }
       try {
-        if (e.response) {
-          const errorData = await e.response.json();
-          errorText = errorData.error || errorData.message || errorText;
+        if (typeof e === "object" && e && "response" in e) {
+          const response = (e as { response?: unknown }).response;
+          if (response && typeof response === "object" && "json" in response) {
+            const errorData = await (response as { json: () => Promise<unknown> }).json();
+            if (typeof errorData === "object" && errorData) {
+              const maybeError = (errorData as { error?: unknown; message?: unknown }).error;
+              const maybeMessage = (errorData as { error?: unknown; message?: unknown }).message;
+              if (typeof maybeError === "string" && maybeError) errorText = maybeError;
+              else if (typeof maybeMessage === "string" && maybeMessage) errorText = maybeMessage;
+            }
+          }
         }
       } catch { }
 
@@ -410,6 +428,17 @@ export default function TheaClient() {
       setIsLoading(false);
     }
   };
+
+  // Auto-send query from URL
+  useEffect(() => {
+    if (query && !hasAutoSent.current && messages.length === 0) {
+      hasAutoSent.current = true;
+      // Small delay to ensure state matches
+      setTimeout(() => {
+        submitMessage(query);
+      }, 500);
+    }
+  }, [query, messages.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -428,7 +457,7 @@ export default function TheaClient() {
     if (messages.length === 0) return;
     const content = messages.map(m =>
       `## ${m.role === 'user' ? 'User' : 'Thea'}\n\n${m.content}\n\n` +
-      (m.citations ? `**Sources:**\n${m.citations.map((c: any) => `- ${c.source} (${c.page})`).join('\n')}\n` : '')
+      (m.citations ? `**Sources:**\n${m.citations.map((c) => `- ${c.source} (${c.page})`).join('\n')}\n` : '')
     ).join('---\n\n');
 
     const blob = new Blob([content], { type: 'text/markdown' });
@@ -443,42 +472,96 @@ export default function TheaClient() {
 
   return (
     <div className="relative flex h-[calc(100vh-3.5rem)] md:h-screen flex-row overflow-hidden">
-      <ChatSidebar
-        onSelect={(id) => router.push(`/dashboard/thea?chatId=${id}`)}
-        activeId={activeConversationId}
-        onNewChat={() => router.push(`/dashboard/thea`)}
-      />
-
       {/* Main Chat Area */}
-      <div className="flex min-w-0 flex-1 flex-col relative">
-        {/* Top Scope / Header - Pinned Top-Left (Relative to Main Chat Area) */}
-        <div className="absolute left-6 top-6 z-20">
-          <div className="flex items-center gap-2">
-            <TheaMark className="h-6 w-6" />
+      <div className="relative flex min-w-0 flex-1 flex-col">
+        {/* History Drawer (inside the Thea panel, so it doesn't cover the dashboard nav) */}
+        <div className={`absolute inset-0 z-30 ${historyOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+          <button
+            type="button"
+            aria-label="Close chats"
+            onClick={() => setHistoryOpen(false)}
+            className={`absolute inset-0 bg-black/15 backdrop-blur-[1px] transition-opacity ${historyOpen ? "opacity-100" : "opacity-0"}`}
+          />
+          <div
+            className={`absolute inset-y-0 left-0 w-[20rem] max-w-[90vw] overflow-hidden border-r border-black/10 bg-white/70 shadow-xl backdrop-blur-2xl transition-transform duration-200 ${historyOpen ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <div className="flex items-center justify-between border-b border-black/5 px-4 py-3">
+              <div className="text-sm font-semibold text-zinc-900">Chats</div>
+              <button
+                type="button"
+                onClick={() => setHistoryOpen(false)}
+                className="rounded-lg p-2 text-zinc-500 hover:bg-black/5 hover:text-zinc-900"
+                aria-label="Close"
+              >
+                <XIcon className="h-5 w-5" />
+              </button>
+            </div>
+            <ChatSidebar
+              onSelect={(id) => {
+                setHistoryOpen(false);
+                router.push(`/dashboard/thea?chatId=${id}`);
+              }}
+              activeId={activeConversationId}
+              onNewChat={() => {
+                setHistoryOpen(false);
+                router.push(`/dashboard/thea`);
+              }}
+              className="w-full border-r-0 bg-transparent pt-3"
+            />
+          </div>
+        </div>
+
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-20 border-b border-black/5 bg-white/40 backdrop-blur-2xl">
+          <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setHistoryOpen(true)}
+                className="inline-flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-zinc-600 hover:bg-black/5 hover:text-zinc-900"
+              >
+                <SidebarIcon className="h-4 w-4" />
+                <span className="hidden sm:inline">Chats</span>
+              </button>
+
+              <div className="ml-1 hidden items-center gap-2 sm:flex">
+                <TheaMark className="h-5 w-5" />
+                <span className="text-sm font-semibold text-zinc-900">Thea</span>
+              </div>
+            </div>
+
             <div className="relative" ref={scopeRef}>
               <button
                 type="button"
                 onClick={() => setScopeOpen((v) => !v)}
-                className="group flex items-center gap-2 rounded-lg py-1 pl-2 pr-3 text-sm font-medium text-zinc-600 hover:bg-black/5 transition"
+                className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition border ${selectedFolderIds.length > 0
+                  ? "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+                  : "text-zinc-600 bg-transparent border-transparent hover:bg-black/5"
+                  }`}
               >
-                <span className="truncate max-w-[200px]">{scopeLabel}</span>
-                <ChevronDownIcon className="h-4 w-4 text-zinc-400 group-hover:text-zinc-600" />
+                {selectedFolderIds.length > 0 && (
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                  </span>
+                )}
+                <span className="max-w-[14rem] truncate">{scopeLabel}</span>
+                <ChevronDownIcon className={`h-4 w-4 ${selectedFolderIds.length > 0 ? "text-indigo-400" : "text-zinc-400 group-hover:text-zinc-600"}`} />
               </button>
 
               {scopeOpen && (
-                <div className="absolute left-0 top-full z-50 mt-2 w-[20rem] overflow-hidden rounded-xl border border-black/5 bg-white/90 p-1 shadow-lg ring-1 ring-black/5 backdrop-blur-xl">
-                  <div className="px-3 py-2 text-xs font-semibold text-zinc-500">
-                    Search capability
-                  </div>
+                <div className="absolute right-0 top-full z-50 mt-2 w-[20rem] overflow-hidden rounded-xl border border-black/10 bg-white/95 p-1 shadow-lg ring-1 ring-black/5 backdrop-blur-xl">
+                  {/* ... (scope dropdown content remains same) ... */}
+                  <div className="px-3 py-2 text-xs font-semibold text-zinc-500">Search scope</div>
                   <button
                     type="button"
                     onClick={() => setManualSelectedFolderIds([])}
                     className="w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-900 hover:bg-black/5"
                   >
-                    All accessible folders
+                    All accessible notebooks
                   </button>
                   <div className="my-1 h-px bg-zinc-200/50" />
-                  <div className="max-h-60 overflow-y-auto">
+                  <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200">
                     {accessibleFolders.map((f) => {
                       const checked = selectedFolderIds.includes(f.id);
                       return (
@@ -495,7 +578,7 @@ export default function TheaClient() {
                                 : selectedFolderIds.filter((id) => id !== f.id);
                               setManualSelectedFolderIds(next);
                             }}
-                            className="h-4 w-4 rounded border-zinc-300 text-black focus:ring-black/5"
+                            className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
                           />
                           <span className="flex-1 truncate">{f.name}</span>
                         </label>
@@ -505,25 +588,25 @@ export default function TheaClient() {
                 </div>
               )}
             </div>
+
+            <div className="flex items-center gap-2">
+              {messages.length > 0 && (
+                <button
+                  onClick={downloadBriefing}
+                  className="inline-flex items-center gap-2 rounded-lg bg-white/60 px-3 py-2 text-sm font-medium text-zinc-600 shadow-sm ring-1 ring-black/5 hover:bg-white hover:text-zinc-900 transition"
+                >
+                  <DocumentIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Export</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Top Right Actions */}
-        <div className="absolute right-6 top-6 z-20 flex gap-2">
-          {messages.length > 0 && (
-            <button
-              onClick={downloadBriefing}
-              className="flex items-center gap-2 rounded-lg bg-white/60 px-3 py-1.5 text-sm font-medium text-zinc-600 shadow-sm ring-1 ring-black/5 hover:bg-white hover:text-zinc-900 backdrop-blur-sm transition"
-            >
-              <DocumentIcon className="h-4 w-4" />
-              <span>Export Briefing</span>
-            </button>
-          )}
-        </div>
-
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-2 scrollbar-thin scrollbar-thumb-zinc-200">
+        <div className="flex-1 overflow-y-auto px-4 pb-4 pt-6 scrollbar-thin scrollbar-thumb-zinc-200">
           <div className="mx-auto flex min-h-full max-w-3xl flex-col">
+            {/* ... (messages content) ... */}
             {scopeWarnings && (
               <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-sm text-amber-900">
                 {scopeWarnings}
@@ -539,30 +622,28 @@ export default function TheaClient() {
             {messages.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center pb-20 text-center">
                 <div className="mb-4 flex justify-center">
-                  <TheaMark className="h-16 w-16" />
+                  <TheaMark className="h-14 w-14" />
                 </div>
 
-                <h1 className="bg-gradient-to-br from-zinc-900 to-zinc-600 bg-clip-text text-4xl font-medium tracking-tight text-transparent sm:text-5xl">
+                <h1 className="text-4xl font-medium tracking-tight text-zinc-900 sm:text-5xl">
                   {timeOfDay}, {userName}
                 </h1>
-                <p className="mt-4 text-lg text-zinc-500">
-                  How can I help you today?
-                </p>
+                <p className="mt-3 text-base text-zinc-500">Ask about anything in your library.</p>
 
-                <div className="mt-12 grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="mt-10 grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
                   {[
-                    { label: "Summarize this week", icon: "📊" },
-                    { label: "What are the key risks?", icon: "⚠️" },
-                    { label: "Draft a pricing email", icon: "✉️" },
-                    { label: "Find me marketing assets", icon: "🎨" },
+                    { label: "Summarize this notebook" },
+                    { label: "Explain a concept from my notes" },
+                    { label: "Pull key claims with citations" },
+                    { label: "Turn this into study notes" },
                   ].map((q) => (
                     <button
                       key={q.label}
                       onClick={() => setInput(q.label)}
-                      className="group relative flex items-center gap-3 rounded-2xl bg-white/40 px-5 py-4 text-left shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 hover:shadow-md"
+                      className="group relative flex items-center justify-between gap-3 rounded-2xl bg-white/40 px-5 py-4 text-left shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 hover:shadow-md"
                     >
-                      <span className="text-xl opacity-60 grayscale transition group-hover:grayscale-0">{q.icon}</span>
                       <span className="text-sm font-medium text-zinc-700">{q.label}</span>
+                      <span className="text-xs text-zinc-400 group-hover:text-zinc-500">↵</span>
                     </button>
                   ))}
                 </div>
@@ -575,7 +656,9 @@ export default function TheaClient() {
                     className={`group flex items-start gap-4 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                   >
                     <div
-                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full shadow-md ring-2 ${m.role === "user" ? "bg-gradient-to-br from-zinc-800 to-zinc-900 ring-zinc-200 text-white" : "bg-gradient-to-br from-white to-zinc-50 ring-zinc-200"
+                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border ${m.role === "user"
+                        ? "border-black/10 bg-zinc-900 text-white"
+                        : "border-black/10 bg-white/70 text-zinc-900"
                         }`}
                     >
                       {m.role === "user" ? (
@@ -586,7 +669,12 @@ export default function TheaClient() {
                     </div>
 
                     <div className={`flex max-w-[80%] flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-                      <div className={`rounded-3xl px-5 py-3.5 shadow-sm ${m.role === "user" ? "bg-gradient-to-br from-zinc-800 to-zinc-900 text-white" : "bg-white/90 border border-black/5 text-zinc-800"}`}>
+                      <div
+                        className={`rounded-2xl px-5 py-3.5 shadow-sm ${m.role === "user"
+                          ? "bg-zinc-900 text-white"
+                          : "border border-black/10 bg-white/70 text-zinc-800"
+                          }`}
+                      >
                         <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
                       </div>
 
@@ -595,79 +683,12 @@ export default function TheaClient() {
                           <button
                             type="button"
                             onClick={() => openSourcesFor(m.id, 0)}
-                            className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition hover:bg-white hover:text-zinc-900 hover:shadow-md backdrop-blur-sm"
+                            className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-1.5 text-xs font-medium text-zinc-600 shadow-sm transition hover:bg-white hover:text-zinc-900"
                           >
                             <DocumentIcon className="h-3.5 w-3.5 opacity-60" />
                             <span>Sources</span>
-                            <span className="rounded-full bg-zinc-900/10 px-2 py-0.5 text-[11px] font-semibold text-zinc-700">
-                              {m.citations.length}
-                            </span>
+                            <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-semibold text-zinc-700">{m.citations.length}</span>
                           </button>
-                        </div>
-                      )}
-
-                      {!!m.citations?.length && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {(() => {
-                            // Group citations by source name
-                            const groups: Record<string, { count: number; firstIdx: number; page: string }> = {};
-                            m.citations.forEach((c, idx) => {
-                              if (!groups[c.source]) {
-                                groups[c.source] = { count: 0, firstIdx: idx, page: c.page };
-                              }
-                              groups[c.source].count++;
-                            });
-
-                            const groupEntries = Object.entries(groups);
-                            const MAX_GROUPS = 3;
-                            const hasMore = groupEntries.length > MAX_GROUPS;
-                            const displayGroups = groupEntries.slice(0, MAX_GROUPS);
-
-                            return (
-                              <>
-                                {displayGroups.map(([source, info]) => {
-                                  // Check if any item in this group is active
-                                  const isActive =
-                                    sourcesOpen && sourcesMessageId === m.id &&
-                                    m.citations?.some((c, i) => c.source === source && i === sourcesCitationIdx);
-
-                                  return (
-                                    <button
-                                      key={source}
-                                      type="button"
-                                      onClick={() => openSourcesFor(m.id, info.firstIdx)}
-                                      className={`inline-flex max-w-[200px] items-center gap-1.5 rounded-lg border px-2 py-1 text-[10px] font-medium transition ${isActive
-                                          ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                                          : "border-black/5 bg-white/50 text-zinc-600 hover:bg-white hover:text-zinc-900"
-                                        }`}
-                                      title={source}
-                                    >
-                                      <DocumentIcon className={`h-3 w-3 ${isActive ? "text-indigo-500" : "text-zinc-400"}`} />
-                                      <span className="truncate">{source}</span>
-                                      {info.count > 1 ? (
-                                        <span className="flex-shrink-0 rounded-full bg-black/5 px-1.5 py-0.5 text-[9px] font-semibold text-zinc-500">
-                                          {info.count}
-                                        </span>
-                                      ) : (
-                                        <span className="flex-shrink-0 text-[9px] text-zinc-400">
-                                          {info.page}
-                                        </span>
-                                      )}
-                                    </button>
-                                  );
-                                })}
-                                {hasMore && (
-                                  <button
-                                    type="button"
-                                    onClick={() => openSourcesFor(m.id, 0)}
-                                    className="inline-flex items-center gap-1 rounded-lg border border-black/5 bg-white/50 px-2 py-1 text-[10px] font-medium text-zinc-500 hover:bg-white hover:text-zinc-900"
-                                  >
-                                    +{groupEntries.length - MAX_GROUPS} more...
-                                  </button>
-                                )}
-                              </>
-                            );
-                          })()}
                         </div>
                       )}
                     </div>
@@ -690,17 +711,17 @@ export default function TheaClient() {
               </div>
             )}
           </div>
-        </div >
+        </div>
 
         {/* Input - Floating at bottom */}
-        < div className="flex-shrink-0 px-4 pb-4 pt-2" >
+        <div className="flex-shrink-0 px-4 pb-4 pt-2">
           <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
             {/* Clean, Simple Input Container */}
-            <div className="relative flex items-center gap-3 rounded-[2rem] bg-white border border-black/10 p-3 shadow-sm transition hover:border-black/20 focus-within:border-black/20 focus-within:ring-4 focus-within:ring-black/5">
+            <div className="relative flex items-center gap-3 rounded-[2rem] bg-zinc-50/80 border border-zinc-200/80 p-3 shadow-sm transition hover:bg-white hover:border-black/20 focus-within:bg-white focus-within:border-black/20 focus-within:ring-4 focus-within:ring-black/5 backdrop-blur-xl">
               <button
                 type="button"
                 onClick={toggleListening}
-                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-200 hover:bg-zinc-100 ${isListening ? "animate-pulse bg-red-100 text-red-600" : "text-zinc-900"}`}
+                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-200 hover:bg-zinc-200/50 ${isListening ? "animate-pulse bg-red-100 text-red-600" : "text-zinc-600"}`}
                 aria-label={isListening ? "Stop voice input" : "Start voice input"}
               >
                 <MicIcon className="h-5 w-5" />
@@ -708,10 +729,10 @@ export default function TheaClient() {
 
               <div className="relative min-w-0 flex-1 flex items-center">
                 {isListening && (
-                  <div className="absolute -top-8 left-0 flex items-center gap-1.5 text-xs font-semibold text-indigo-600">
+                  <div className="absolute -top-8 left-0 flex items-center gap-1.5 text-xs font-semibold text-red-600">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                     </span>
                     Listening...
                   </div>
@@ -725,7 +746,7 @@ export default function TheaClient() {
                   placeholder="Ask Thea anything..."
                   rows={1}
                   // 'items-center' on parent + 'h-6' on textarea ensures vertical centering visually
-                  className="max-h-32 w-full resize-none bg-transparent px-1 text-lg text-zinc-900 placeholder:text-zinc-400 focus:outline-none scrollbar-hide py-3 leading-6"
+                  className="max-h-32 w-full resize-none bg-transparent px-1 text-lg text-zinc-900 placeholder:text-zinc-500 focus:outline-none scrollbar-hide py-3 leading-6"
                   style={{ minHeight: '3rem' }}
                 />
               </div>
@@ -734,7 +755,7 @@ export default function TheaClient() {
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-900 transition-all hover:bg-zinc-100 disabled:opacity-30 disabled:hover:bg-transparent"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-400"
                 >
                   <ArrowUpIcon className="h-6 w-6 stroke-[2.5px]" />
                 </button>
@@ -747,8 +768,8 @@ export default function TheaClient() {
               </p>
             </div>
           </form>
-        </div >
-      </div >
+        </div>
+      </div>
 
 
       {/* Sources - Right Sidebar */}
@@ -772,7 +793,7 @@ export default function TheaClient() {
                     <div
                       key={c.id}
                       className={`rounded-xl border p-4 shadow-sm transition ${idx === sourcesCitationIdx
-                        ? "border-indigo-200 bg-white ring-2 ring-indigo-500/10"
+                        ? "border-black/10 bg-white ring-2 ring-black/5"
                         : "border-black/5 bg-white/60 hover:bg-white"
                         }`}
                       onClick={() => setSourcesCitationIdx(idx)}
@@ -869,7 +890,15 @@ export default function TheaClient() {
           </div>
         </div>
       </div>
-    </div >
+    </div>
+  );
+}
+
+function SidebarIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+    </svg>
   );
 }
 

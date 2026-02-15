@@ -6,9 +6,10 @@ import { useState, useRef, useEffect } from "react";
 type UserDropdownProps = {
     userName: string;
     userRole: string;
+    imageUrl?: string;
 };
 
-export function UserDropdown({ userName, userRole }: UserDropdownProps) {
+export function UserDropdown({ userName, userRole, imageUrl }: UserDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -36,9 +37,17 @@ export function UserDropdown({ userName, userRole }: UserDropdownProps) {
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/50 transition-all duration-200 group"
             >
-                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white shadow-sm ring-2 ring-white">
-                    {userName.charAt(0)}
-                </div>
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt={userName}
+                        className="h-9 w-9 rounded-full object-cover shadow-sm ring-2 ring-white"
+                    />
+                ) : (
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white shadow-sm ring-2 ring-white">
+                        {userName.charAt(0).toUpperCase()}
+                    </div>
+                )}
                 <div className="flex-1 min-w-0 text-left">
                     <div className="text-sm font-semibold text-zinc-900 truncate">{userName}</div>
                     <div className="text-xs text-zinc-500 truncate">{userRole}</div>

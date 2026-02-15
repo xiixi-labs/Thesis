@@ -23,6 +23,35 @@ export default function DocumentsPage() {
   const [selectedFolderId, setSelectedFolderId] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Search and filter
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterFolder, setFilterFolder] = useState<string>("all");
+
+  // Document actions
+  const [deletingDocId, setDeletingDocId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Helper functions
+  const formatFileSize = (sizeStr: string) => {
+    const bytes = parseInt(sizeStr);
+    if (isNaN(bytes)) return sizeStr;
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
+  };
+
   // Initialize selected folder to first available
   useEffect(() => {
     if (accessibleFolders.length > 0 && !selectedFolderId) {
@@ -51,6 +80,51 @@ export default function DocumentsPage() {
   useEffect(() => {
     fetchDocs();
   }, [activeUserId]);
+
+  // Filter documents based on search and folder filter
+  const filteredDocs = documents.filter(doc => {
+    const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFolder = filterFolder === 'all' || doc.folderName === filterFolder;
+    return matchesSearch && matchesFolder;
+  });
+
+  // Document action handlers
+  const handleDelete = async (doc: Doc) => {
+    if (!confirm(`Delete "${doc.name}"?`)) return;
+
+    setDeletingDocId(doc.id);
+    try {
+      // Delete from storage
+      const filePath = `${activeUserId}/${doc.name}`;
+      await supabase.storage.from('documents').remove([filePath]);
+
+      // Refresh list (the document will be gone from storage)
+      await fetchDocs();
+    } catch (error) {
+      console.error('Failed to delete document:', error);
+      alert('Failed to delete document. Please try again.');
+    } finally {
+      setDeletingDocId(null);
+    }
+  };
+
+  const handleDownload = async (doc: Doc) => {
+    try {
+      const filePath = `${activeUserId}/${doc.name}`;
+      const { data, error } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(filePath, 60);
+
+      if (error) throw error;
+
+      if (data?.signedUrl) {
+        window.open(data.signedUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Failed to download document:', error);
+      alert('Failed to download document. Please try again.');
+    }
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -109,8 +183,7 @@ export default function DocumentsPage() {
     }
   };
 
-  // Drag and Drop
-  const [isDragging, setIsDragging] = useState(false);
+  // Drag and Drop handlers
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -142,6 +215,32 @@ export default function DocumentsPage() {
           className="hidden"
           onChange={handleFileSelect}
         />
+      </div>
+
+      {/* Search and Filter */}
+      <div className="mb-6 flex flex-col sm:flex-row gap-3">
+        <div className="flex-1 relative">
+          <input
+            type="search"
+            placeholder="Search documents..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2.5 pl-10 rounded-lg border border-zinc-200 bg-white text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          />
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <select
+          value={filterFolder}
+          onChange={(e) => setFilterFolder(e.target.value)}
+          className="px-4 py-2.5 rounded-lg border border-zinc-200 bg-white text-sm font-medium text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 min-w-[200px]"
+        >
+          <option value="all">All Notebooks</option>
+          {accessibleFolders.map(f => (
+            <option key={f.id} value={f.name}>{f.name}</option>
+          ))}
+        </select>
       </div>
 
       {/* Upload Area */}
@@ -185,40 +284,79 @@ export default function DocumentsPage() {
         <h2 className="text-lg font-semibold text-zinc-950">All Documents</h2>
         <div className="mt-4 overflow-hidden rounded-2xl border border-black/5 bg-white/60 shadow-sm backdrop-blur-xl">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/5 bg-white/50 text-xs font-medium uppercase tracking-wider text-zinc-500">
-              <tr>
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Folder</th>
-                <th className="px-6 py-3">Size</th>
-                <th className="px-6 py-3 text-right">Uploaded</th>
+            <thead>
+              <tr className="border-b border-black/5 bg-zinc-50/50">
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Notebook</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Size</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Uploaded</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
-              {documents.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-zinc-500 italic">
-                    {isLoading ? "Loading..." : "No documents found."}
+                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-zinc-500">
+                    Loading documents...
+                  </td>
+                </tr>
+              ) : filteredDocs.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    {documents.length === 0 ? (
+                      <div>
+                        <p className="text-sm font-medium text-zinc-900">No documents yet</p>
+                        <p className="text-xs text-zinc-500 mt-1">Upload your first document above</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-sm text-zinc-600">No documents match your search</p>
+                        <button
+                          onClick={() => { setSearchQuery(''); setFilterFolder('all'); }}
+                          className="mt-2 text-xs text-indigo-600 hover:underline"
+                        >
+                          Clear filters
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ) : (
-                documents.map((doc, i) => (
-                  <tr key={doc.id} className="group hover:bg-white/60 transition-colors">
-                    <td className="px-6 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-black/5">
-                          <FileIcon className="h-4 w-4 text-zinc-500" />
-                        </div>
-                        <span className="font-medium text-zinc-900">{doc.name}</span>
+                filteredDocs.map((doc) => (
+                  <tr key={doc.id} className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-zinc-900">{doc.name}</td>
+                    <td className="px-6 py-4 text-sm text-zinc-600">{doc.folderName}</td>
+                    <td className="px-6 py-4 text-sm text-zinc-600">{formatFileSize(doc.size)}</td>
+                    <td className="px-6 py-4 text-sm text-zinc-600">{formatDate(doc.createdAt)}</td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleDownload(doc)}
+                          className="p-1.5 rounded-lg hover:bg-zinc-100 transition-colors"
+                          title="Download"
+                        >
+                          <svg className="h-4 w-4 text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleDelete(doc)}
+                          disabled={deletingDocId === doc.id}
+                          className="p-1.5 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                          title="Delete"
+                        >
+                          {deletingDocId === doc.id ? (
+                            <svg className="h-4 w-4 text-zinc-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          ) : (
+                            <svg className="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                          )}
+                        </button>
                       </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <span className="inline-flex items-center rounded-full border border-black/5 bg-black/5 px-2 py-0.5 text-xs font-medium text-zinc-600">
-                        {doc.folderName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 text-zinc-500">{doc.size}</td>
-                    <td className="px-6 py-3 text-right text-zinc-500">
-                      {new Date(doc.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))
@@ -226,8 +364,8 @@ export default function DocumentsPage() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
