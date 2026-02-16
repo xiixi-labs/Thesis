@@ -31,6 +31,14 @@ export default function DocumentsPage() {
   const [deletingDocId, setDeletingDocId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Upload progress
+  const [uploadProgress, setUploadProgress] = useState<{
+    fileName: string;
+    progress: number;
+    status: 'uploading' | 'processing' | 'complete' | 'error';
+    error?: string;
+  } | null>(null);
+
   // Helper functions
   const formatFileSize = (sizeStr: string) => {
     const bytes = parseInt(sizeStr);
@@ -139,14 +147,25 @@ export default function DocumentsPage() {
     }
 
     setIsUploading(true);
+    setUploadProgress({
+      fileName: file.name,
+      progress: 0,
+      status: 'uploading'
+    });
 
     try {
       // 1. Client-Side Upload to Supabase Storage
-      // Use a standard path structure: userId/timestamp_filename
-      const fileExt = file.name.split('.').pop();
-      // Sanitize filename
       const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const filePath = `${activeUserId}/${Date.now()}_${safeName}`;
+
+      // Simulate progress for demonstration (Supabase doesn't expose upload progress in JS client)
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 10;
+        if (progress <= 90) {
+          setUploadProgress(prev => prev ? { ...prev, progress } : null);
+        }
+      }, 200);
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("documents")
@@ -155,9 +174,18 @@ export default function DocumentsPage() {
           upsert: false
         });
 
+      clearInterval(progressInterval);
+
       if (uploadError) {
         throw new Error(`Storage upload failed: ${uploadError.message}`);
       }
+
+      // Update to processing state
+      setUploadProgress({
+        fileName: file.name,
+        progress: 100,
+        status: 'processing'
+      });
 
       // 2. Register Metadata via Server Action
       const formData = new FormData();
@@ -170,12 +198,28 @@ export default function DocumentsPage() {
 
       await registerDocument(formData);
 
+      // Complete
+      setUploadProgress({
+        fileName: file.name,
+        progress: 100,
+        status: 'complete'
+      });
+
       // Refresh list
       await fetchDocs();
-      alert("Document uploaded successfully! Text extraction complete. Embeddings are being generated in the background and will be ready for search shortly.");
+
+      // Clear progress after 2 seconds
+      setTimeout(() => {
+        setUploadProgress(null);
+      }, 2000);
     } catch (err: any) {
       console.error(err);
-      alert(`Failed to upload document: ${err.message}`);
+      setUploadProgress({
+        fileName: file.name,
+        progress: 0,
+        status: 'error',
+        error: err.message
+      });
     } finally {
       setIsUploading(false);
       // Reset input
@@ -216,6 +260,57 @@ export default function DocumentsPage() {
           onChange={handleFileSelect}
         />
       </div>
+
+      {/* Upload Progress Indicator */}
+      {uploadProgress && (
+        <div className="mb-6 rounded-lg border border-black/5 bg-white/60 p-4 backdrop-blur-xl shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              {uploadProgress.status === 'uploading' && (
+                <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse flex-shrink-0" />
+              )}
+              {uploadProgress.status === 'processing' && (
+                <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse flex-shrink-0" />
+              )}
+              {uploadProgress.status === 'complete' && (
+                <svg className="h-5 w-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+              {uploadProgress.status === 'error' && (
+                <svg className="h-5 w-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+              <span className="text-sm font-medium text-zinc-900 truncate">
+                {uploadProgress.fileName}
+              </span>
+            </div>
+            <span className="text-xs text-zinc-500 ml-2 flex-shrink-0">
+              {uploadProgress.status === 'uploading' && `${uploadProgress.progress}%`}
+              {uploadProgress.status === 'processing' && 'Processing...'}
+              {uploadProgress.status === 'complete' && 'Complete!'}
+              {uploadProgress.status === 'error' && 'Failed'}
+            </span>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="h-1.5 w-full rounded-full bg-zinc-100 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-300 ${uploadProgress.status === 'error' ? 'bg-red-500' :
+                  uploadProgress.status === 'complete' ? 'bg-green-500' :
+                    uploadProgress.status === 'processing' ? 'bg-yellow-500' :
+                      'bg-blue-500'
+                }`}
+              style={{ width: `${uploadProgress.progress}%` }}
+            />
+          </div>
+
+          {uploadProgress.error && (
+            <p className="mt-2 text-xs text-red-600">{uploadProgress.error}</p>
+          )}
+        </div>
+      )}
 
       {/* Search and Filter */}
       <div className="mb-6 flex flex-col sm:flex-row gap-3">
