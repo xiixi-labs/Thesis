@@ -24,9 +24,10 @@ export type FileRecord = {
 export async function uploadFile(
     folderId: string,
     file: File,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    accessToken?: string
 ): Promise<FileRecord> {
-    const supabase = createClient();
+    const supabase = createClient(accessToken);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
@@ -86,8 +87,8 @@ export async function uploadFile(
 /**
  * Get all files in a folder
  */
-export async function getFolderFiles(folderId: string): Promise<FileRecord[]> {
-    const supabase = createClient();
+export async function getFolderFiles(folderId: string, accessToken?: string): Promise<FileRecord[]> {
+    const supabase = createClient(accessToken);
 
     const { data, error } = await supabase
         .from('files')
@@ -106,8 +107,8 @@ export async function getFolderFiles(folderId: string): Promise<FileRecord[]> {
 /**
  * Delete a file
  */
-export async function deleteFile(fileId: string): Promise<void> {
-    const supabase = createClient();
+export async function deleteFile(fileId: string, accessToken?: string): Promise<void> {
+    const supabase = createClient(accessToken);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
@@ -151,8 +152,8 @@ export async function deleteFile(fileId: string): Promise<void> {
 /**
  * Download a file
  */
-export async function downloadFile(storagePath: string): Promise<Blob> {
-    const supabase = createClient();
+export async function downloadFile(storagePath: string, accessToken?: string): Promise<Blob> {
+    const supabase = createClient(accessToken);
 
     const { data, error } = await supabase.storage
         .from('thesis-files')

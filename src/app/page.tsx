@@ -22,6 +22,9 @@ export default function Home() {
     }
   };
 
+  const PRIMARY_CTA_LABEL = "Join Waitlist";
+  const PRIMARY_CTA_HREF = "/waitlist";
+
   return (
     <div className="min-h-screen bg-[#fbfbfd] text-zinc-950">
       {/* Sticky Header */}
@@ -46,6 +49,11 @@ export default function Home() {
             <a className="cursor-pointer transition hover:text-zinc-900" onClick={(e) => scrollToSection(e, "how-it-works")}>
               How it works
             </a>
+            <a className="cursor-pointer transition hover:text-zinc-900" onClick={(e) => scrollToSection(e, "meet-thea")}>
+              <span className="inline-block bg-[linear-gradient(90deg,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] bg-[length:200%_100%] bg-clip-text text-transparent motion-safe:animate-[thea-roll_6s_ease_infinite]">
+                Meet Thea
+              </span>
+            </a>
             <a className="cursor-pointer transition hover:text-zinc-900" onClick={(e) => scrollToSection(e, "security")}>
               Security
             </a>
@@ -61,9 +69,9 @@ export default function Home() {
             <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
               <a
                 className="inline-flex items-center justify-center rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                href="/waitlist"
+                href={PRIMARY_CTA_HREF}
               >
-                Join waitlist
+                {PRIMARY_CTA_LABEL}
               </a>
             </div>
           </div>
@@ -72,30 +80,19 @@ export default function Home() {
 
       <div className="relative bg-[#fbfbfd] pt-16">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Vibrant Ambient Glow - Extended with enhanced opacity */}
-          <div className="pointer-events-none absolute left-1/2 top-[-12rem] h-[38rem] w-[58rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.55),rgba(255,255,255,0)_60%)] blur-[80px]" />
-          <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.55),rgba(255,255,255,0)_55%)] blur-[80px]" />
-          <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[20rem] w-[20rem] md:h-[36rem] md:w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[22rem] w-[22rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.55),rgba(255,255,255,0)_58%)] blur-[90px]" />
-          <div className="pointer-events-none absolute left-[12%] top-[24rem] h-[16rem] w-[16rem] md:h-[28rem] md:w-[28rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[8%] top-[32rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          {/* Ambient Glow (calmer + fewer layers for a more "Apple" feel) */}
+          <div className="pointer-events-none absolute left-1/2 top-[-12rem] h-[38rem] w-[58rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.38),rgba(255,255,255,0)_62%)] blur-[90px]" />
+          <div className="pointer-events-none absolute left-1/2 top-[-6rem] h-[32rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.36),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          <div className="pointer-events-none absolute left-[-12rem] top-[2rem] h-[20rem] w-[20rem] md:h-[36rem] md:w-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.32),rgba(255,255,255,0)_62%)] blur-[100px]" />
+          <div className="pointer-events-none absolute right-[-14rem] top-[4rem] h-[22rem] w-[22rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.30),rgba(255,255,255,0)_62%)] blur-[100px]" />
 
-
-          {/* Lower page ambient glow for continuity */}
-          <div className="pointer-events-none absolute left-[-10%] top-[60rem] h-[18rem] w-[18rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute right-[-5%] top-[70rem] h-[20rem] w-[20rem] md:h-[32rem] md:w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-
-
-          {/* Mid-page ambient glow for Features & How it works */}
-          <div className="pointer-events-none absolute right-[-10%] top-[40%] h-[30rem] w-[30rem] md:h-[40rem] md:w-[40rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-          <div className="pointer-events-none absolute left-[-5%] top-[55%] h-[32rem] w-[32rem] md:h-[35rem] md:w-[35rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
-
-          {/* Lower-page ambient glow for Pricing & FAQ */}
-          <div className="pointer-events-none absolute right-[10%] top-[75%] h-[34rem] w-[34rem] md:h-[45rem] md:w-[45rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.55),rgba(255,255,255,0)_60%)] blur-[100px]" />
-          <div className="pointer-events-none absolute left-[5%] top-[90%] h-[30rem] w-[30rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.55),rgba(255,255,255,0)_60%)] blur-[90px]" />
+          {/* Mid + lower page (subtle continuity) */}
+          <div className="pointer-events-none absolute left-[-6%] top-[55%] h-[32rem] w-[32rem] md:h-[35rem] md:w-[35rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.22),rgba(255,255,255,0)_62%)] blur-[110px]" />
+          <div className="pointer-events-none absolute right-[10%] top-[78%] h-[34rem] w-[34rem] md:h-[45rem] md:w-[45rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.24),rgba(255,255,255,0)_62%)] blur-[120px]" />
+          <div className="pointer-events-none absolute left-[5%] top-[92%] h-[30rem] w-[30rem] md:h-[30rem] md:w-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.22),rgba(255,255,255,0)_62%)] blur-[110px]" />
           {/* Salt-and-pepper grain texture overlay */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 1 1 1 0 0 0'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 1'/%3E%3CfeFuncG type='discrete' tableValues='0 1'/%3E%3CfeFuncB type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
               backgroundSize: '200px 200px'
@@ -108,7 +105,7 @@ export default function Home() {
           <section className="flex min-h-[70vh] flex-col items-center justify-center text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/45 px-3 py-1 text-xs font-medium text-zinc-800 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl opacity-0 animate-fade-in-up">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-              Now onboarding teams
+              Now onboarding personal accounts
             </div>
 
             <h1
@@ -119,10 +116,11 @@ export default function Home() {
             </h1>
 
             <p
-              className="mt-6 max-w-none whitespace-nowrap text-base leading-7 text-zinc-600 sm:text-lg sm:leading-8 md:text-xl opacity-0 animate-fade-in-up"
+              className="mt-6 max-w-2xl text-lg leading-8 text-zinc-600 sm:text-xl sm:leading-9 md:text-2xl opacity-0 animate-fade-in-up mx-auto"
               style={{ animationDelay: "200ms" }}
             >
-              Cited answers from your notes.
+              Upload your notes, readings, and papers. Thea, your AI study partner, answers with
+              citations back to your own library — so you always know where every idea came from.
             </p>
 
             <div
@@ -132,9 +130,9 @@ export default function Home() {
               <div className="rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-xl shadow-zinc-900/10 transition hover:shadow-2xl hover:shadow-indigo-500/20">
                 <a
                   className="inline-flex h-12 items-center justify-center rounded-full bg-white/95 px-8 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-105"
-                  href="/waitlist"
+                  href={PRIMARY_CTA_HREF}
                 >
-                  Request access
+                  {PRIMARY_CTA_LABEL}
                 </a>
               </div>
               <a
@@ -145,11 +143,76 @@ export default function Home() {
               </a>
             </div>
 
+            {/* Hero product preview (cited answers) */}
+            <div
+              className="mt-14 w-full max-w-5xl opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "420ms" }}
+            >
+              <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/65 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.22)] backdrop-blur-3xl">
+                <div className="grid md:grid-cols-[1.2fr_0.8fr]">
+                  <div className="p-6 md:p-8 text-left">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-600">
+                      Cited answer
+                      <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                      From your notebooks
+                    </div>
+                    <h3 className="mt-4 text-xl md:text-2xl font-semibold tracking-tight text-zinc-950">
+                      “Explain this section like I have an exam tomorrow.”
+                    </h3>
+                    <p className="mt-3 text-sm md:text-base leading-6 md:leading-7 text-zinc-600 max-w-2xl">
+                      Here are the core ideas that show up most often in your notes, plus the exact pages
+                      where each point appears — so you can verify every claim.
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {["Bio 101 Notes • p. 12", "Lecture 3 Slides • slide 18", "Textbook.pdf • p. 184"].map((c) => (
+                        <span
+                          key={c}
+                          className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs font-medium text-zinc-700"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="relative border-t border-black/5 bg-white/35 p-6 md:p-8 md:border-t-0 md:border-l text-left">
+                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                      In this notebook
+                    </div>
+                    <ul className="mt-4 space-y-3">
+                      {[
+                        { label: "Week 4: Photosynthesis", meta: "12 pages" },
+                        { label: "Lecture notes", meta: "8 pages" },
+                        { label: "Assigned reading", meta: "1 PDF" },
+                      ].map((s) => (
+                        <li key={s.label} className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-medium text-zinc-800">{s.label}</span>
+                          <span className="text-xs text-zinc-500">{s.meta}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {["PDF", "DOCX", "PPTX"].map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-full border border-black/10 bg-white/60 px-2.5 py-1 text-[11px] font-semibold text-zinc-700"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute -right-16 -bottom-16 opacity-[0.85]">
+                  <TheaMark className="h-48 w-48" />
+                </div>
+              </div>
+            </div>
+
             <p
-              className="mt-16 text-sm text-zinc-500 opacity-0 animate-fade-in-up"
+              className="mt-12 text-sm text-zinc-500 opacity-0 animate-fade-in-up"
               style={{ animationDelay: "500ms" }}
             >
-              Personal learning coming soon.
+              Personal plans are in early access — join the waitlist to be first in when we go live.
             </p>
           </section>
 
@@ -157,81 +220,53 @@ export default function Home() {
 
 
 
-          {/* Who it's for - moved above features for better narrative flow */}
+          {/* Who it's for - focused on individuals */}
           <section id="who-its-for" className="mt-32">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-zinc-950 mb-4">
-                For personal learning and teams.
+                For independent learners and researchers.
               </h2>
               <p className="mt-4 max-w-3xl mx-auto text-lg leading-8 text-zinc-600">
-                Same core idea: upload what you have, ask what you need, and get answers you can trust.
+                Upload what you have, ask what you need, and get cited answers grounded in your own notes.
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
-                {/* Icon and Header on same line */}
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
-                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-zinc-950">Personal Learning</h3>
+            {/* Persona strip (lighter than full cards) */}
+            <div className="grid gap-4 md:grid-cols-3">
+              {[
+                {
+                  label: "Students",
+                  body: "Turn lectures and readings into cited study guides and exam prep in minutes.",
+                },
+                {
+                  label: "Independent learners",
+                  body: "Ask questions across your library and keep every answer grounded in your own sources.",
+                },
+                {
+                  label: "Solo researchers",
+                  body: "Trace claims back to original passages so your work stays verifiable and organized.",
+                },
+              ].map((p) => (
+                <div
+                  key={p.label}
+                  className="rounded-[1.75rem] border border-black/10 bg-white/55 p-6 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl transition hover:bg-white/70"
+                >
+                  <div className="text-sm font-semibold text-zinc-950">{p.label}</div>
+                  <p className="mt-2 text-sm leading-6 text-zinc-600">{p.body}</p>
                 </div>
+              ))}
+            </div>
 
-                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
-                  Turn readings, slides, and notes into study guides, quick summaries, and cited answers.
-                </p>
-
-                <ul className="space-y-2 text-sm text-zinc-700 mb-6">
-                  <li>Ask questions across PDFs, lectures, and notes</li>
-                  <li>Cite exact pages/slides for assignments</li>
-                  <li>Keep a clean personal knowledge library</li>
-                </ul>
-
-                <div className="mt-auto inline-flex items-center gap-2 text-xs font-medium text-zinc-500">
-                  <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                  Personal plans coming soon
-                </div>
-
-                {/* Subtle background decoration */}
-                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
-              </div>
-
-              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
-                {/* Icon and Header on same line */}
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
-                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-zinc-950">Teams</h3>
-                </div>
-
-                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
-                  Keep knowledge centralized and auditable—from onboarding docs to policies and training.
-                </p>
-
-                <ul className="space-y-2 text-sm text-zinc-700 mb-6">
-                  <li>Shared workspace with role-based access</li>
-                  <li>Grounded answers with citations + audit trail</li>
-                  <li>Multi-tenant architecture and isolation</li>
-                </ul>
-
-                <div className="mt-auto">
-                  <a href="/waitlist" className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-900 hover:text-zinc-700 transition">
-                    Get started
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-
-                {/* Subtle background decoration */}
-                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
-              </div>
+            {/* Compact credibility (not reviews) */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-xs">
+              {["Citations on every answer", "Notebook-scoped", "Private by default", "PDF • DOCX • PPTX"].map((c) => (
+                <span
+                  key={c}
+                  className="rounded-full border border-black/10 bg-white/55 px-3 py-1 font-medium text-zinc-700 backdrop-blur"
+                >
+                  {c}
+                </span>
+              ))}
             </div>
           </section>
 
@@ -239,78 +274,297 @@ export default function Home() {
           <section id="how-it-works" className="mt-24">
             <div className="text-center py-8">
               <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-950">How it works</h2>
-              <p className="mt-3 text-lg text-zinc-600">Upload, ask, and get cited answers.</p>
+              <p className="mt-3 text-lg text-zinc-600">
+                A simple workflow: scope your notebook, add material, then ask questions with citations.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Step 1: Ingestion */}
-              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
-                {/* Icon and Header on same line */}
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
-                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
+            {/* More "Apple/Google" layout: steps + product preview (instead of 3 similar cards) */}
+            <div className="rounded-[2.75rem] border border-black/10 bg-white/60 p-6 md:p-10 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
+              <div className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-start">
+                {/* Steps */}
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/55 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-600">
+                    Process
+                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                    In minutes
                   </div>
-                  <h3 className="text-lg font-semibold text-zinc-950">Secure Ingestion</h3>
-                </div>
-                <p className="text-zinc-600 leading-relaxed text-sm">
-                  Drag and drop your PDFs, docs, and slides. We encrypt, process, and index your knowledge base instantly, creating a private understanding of your work.
-                </p>
 
-                {/* Subtle background decoration */}
-                <div className="absolute right-[-30px] top-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-zinc-200/40 to-transparent blur-3xl" />
+                  <ol className="mt-6 space-y-4">
+                    {[
+                      {
+                        title: "Create a notebook",
+                        body: "Start a notebook for each class, project, or topic. The notebook becomes your scope — what Thea is allowed to use.",
+                      },
+                      {
+                        title: "Add your material",
+                        body: "Drop in PDFs, docs, and slides. Thesis prepares them so answers can point back to the exact page.",
+                      },
+                      {
+                        title: "Ask and verify",
+                        body: "Ask for summaries, comparisons, or practice questions. Every response includes citations so you can check the source.",
+                      },
+                    ].map((step, i) => (
+                      <li
+                        key={step.title}
+                        className="rounded-2xl border border-black/10 bg-white/55 px-5 py-4 shadow-sm shadow-zinc-900/5 backdrop-blur-2xl"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-sm shadow-zinc-900/10">
+                            <div className="flex h-full w-full items-center justify-center rounded-full bg-white/90 text-sm font-semibold text-zinc-900">
+                              {i + 1}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-zinc-950">{step.title}</div>
+                            <p className="mt-1 text-sm leading-6 text-zinc-600">{step.body}</p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+
+                  <div className="mt-6">
+                    <a
+                      href={PRIMARY_CTA_HREF}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+                    >
+                      {PRIMARY_CTA_LABEL}
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Product preview */}
+                <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/70 shadow-sm backdrop-blur-2xl">
+                  <div className="flex items-center justify-between gap-4 border-b border-black/5 bg-white/60 px-5 py-4">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Notebook</div>
+                      <div className="mt-1 text-sm font-semibold text-zinc-900">Bio 101 — Photosynthesis</div>
+                    </div>
+                    <div className="hidden sm:flex flex-wrap justify-end gap-2">
+                      {[
+                        "Lecture notes",
+                        "Assigned reading",
+                        "Lab report",
+                      ].map((c) => (
+                        <span
+                          key={c}
+                          className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] font-semibold text-zinc-700"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 p-5 md:p-6">
+                    <div className="rounded-2xl border border-black/10 bg-white/70 px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Ask</p>
+                        <span className="rounded-full border border-black/10 bg-white/60 px-2 py-0.5 text-[11px] font-semibold text-zinc-600">
+                          ⌘K
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-zinc-800">Make me a study guide for the Calvin cycle.</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-black/10 bg-white/80 px-4 py-3 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Cited answer</p>
+                      <ul className="mt-3 space-y-2 text-sm text-zinc-700">
+                        {[
+                          {
+                            t: "Purpose: converts CO₂ into sugars using ATP and NADPH.",
+                            c: "Textbook.pdf • p. 184",
+                          },
+                          {
+                            t: "Three phases: fixation → reduction → regeneration.",
+                            c: "Lecture 3 Slides • slide 18",
+                          },
+                          {
+                            t: "Key enzyme: RuBisCO (rate-limiting under many conditions).",
+                            c: "Bio 101 Notes • p. 12",
+                          },
+                        ].map((row) => (
+                          <li key={row.t} className="flex flex-col gap-2 rounded-xl bg-white/60 px-3 py-2">
+                            <span className="leading-6">{row.t}</span>
+                            <span className="w-fit rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-zinc-600">
+                              {row.c}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Ambient mark */}
+                  <div className="pointer-events-none absolute -right-14 -bottom-16 opacity-[0.65]">
+                    <TheaMark className="h-44 w-44" />
+                  </div>
+                </div>
               </div>
+            </div>
+          </section>
 
-              {/* Step 2: Reasoning */}
-              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
-                {/* Icon and Header on same line */}
-                <div className="mb-6 flex items-center gap-4 relative z-10">
-                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
-                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-zinc-950">Neural Analysis</h3>
-                </div>
-                <p className="text-zinc-600 leading-relaxed text-sm relative z-10">
-                  Thea reads every sentence, connecting concepts across documents to build a contextual map of your information—without you lifting a finger.
+          {/* Meet Thea - your AI study partner */}
+          <section id="meet-thea" className="mt-24">
+            <div className="grid gap-10 md:grid-cols-2 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-950">
+                  Meet Thea, your AI study & research partner.
+                </h2>
+                <p className="mt-4 text-base leading-7 text-zinc-600 max-w-xl">
+                  Thea works with your notebooks, not the open web. Ask questions, follow up, and get
+                  explanations you can verify back to your own sources.
                 </p>
-
-                {/* Vibrant Thea Orb - NO opacity reduction */}
-                <div className="absolute right-[-2.5rem] bottom-[-2.5rem] transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12">
-                  <TheaMark className="h-40 w-40" />
-                </div>
-              </div>
-
-              {/* Step 3: Synthesis */}
-              <div className="bg-white/70 border border-black/5 rounded-[2rem] p-8 flex flex-col shadow-sm hover:shadow-lg transition-all backdrop-blur-3xl relative overflow-hidden group min-h-[340px]">
-                {/* Icon and Header on same line */}
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center flex-shrink-0">
-                    <svg className="h-7 w-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-zinc-950">Cited Retrieval</h3>
-                </div>
-
-                <p className="text-zinc-600 leading-relaxed text-sm mb-6">
-                  Ask complex questions and receive complete answers. Every claim is backed by a direct, clickable citation to the exact source page.
-                </p>
-
-                {/* CTA for flow completion */}
-                <div className="mt-auto">
-                  <a href="/waitlist" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700 group/link">
-                    Start Researching
-                    <svg className="h-4 w-4 transition-transform group-hover/link:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <ul className="mt-6 space-y-3 text-sm text-zinc-700">
+                  <li className="flex gap-3">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                    <span>Grounded in the notebooks and documents you choose to include.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]" />
+                    <span>Citations on every answer, so you can inspect the exact source page.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                    <span>Built for multi-step study sessions, not one-off questions.</span>
+                  </li>
+                </ul>
+                <div className="mt-8">
+                  <a
+                    href={PRIMARY_CTA_HREF}
+                    className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-6 py-2 text-sm font-semibold text-zinc-900 shadow-sm backdrop-blur-2xl hover:bg-white hover:border-black/20 transition"
+                  >
+                    {PRIMARY_CTA_LABEL}
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </a>
                 </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -inset-6 rounded-[2rem] bg-[radial-gradient(circle_at_top,#c7d2fe,transparent_55%)] opacity-70 blur-2xl" />
+                <div className="relative rounded-[2rem] border border-black/10 bg-white/80 p-6 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.25)] backdrop-blur-2xl">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-500">
+                        Notebook-scoped • private by default
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-zinc-900">Bio 101 — Study mode</p>
+                    </div>
+                    <span className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] font-semibold text-zinc-700">
+                      Cited answers
+                    </span>
+                  </div>
 
-                {/* Subtle background decoration */}
-                <div className="absolute left-[-30px] bottom-[-30px] h-32 w-32 rounded-full bg-gradient-to-br from-emerald-200/30 to-transparent blur-3xl" />
+                  <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_220px]">
+                    {/* Main panel */}
+                    <div className="space-y-3">
+                      {/* Prompt */}
+                      <div className="rounded-2xl border border-black/10 bg-white/70 px-4 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                            Ask
+                          </p>
+                          <span className="rounded-full bg-zinc-900/5 px-2 py-1 text-[11px] font-medium text-zinc-500">
+                            ⌘K
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm text-zinc-800">
+                          Summarize this notebook like I have an exam tomorrow. What should I focus on?
+                        </p>
+                      </div>
+
+                      {/* Answer */}
+                      <div className="rounded-2xl border border-black/10 bg-white/80 px-4 py-3 shadow-sm">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                            Cited answer
+                          </p>
+                          <span className="text-[11px] text-zinc-500">0.8s</span>
+                        </div>
+                        <p className="mt-2 text-sm text-zinc-800">
+                          Focus on these three ideas — each one shows up repeatedly across your notes.
+                        </p>
+                        <ul className="mt-2 space-y-1.5 text-sm text-zinc-800">
+                          <li className="flex items-start gap-2">
+                            <span className="mt-[7px] h-1 w-1 rounded-full bg-emerald-500" />
+                            <span>
+                              Light reactions: electron transport + ATP/NADPH
+                              <span className="ml-2 align-middle rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-700">p. 12</span>
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-[7px] h-1 w-1 rounded-full bg-indigo-500" />
+                            <span>
+                              Calvin cycle: inputs/outputs + where carbon is fixed
+                              <span className="ml-2 align-middle rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-700">slide 18</span>
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-[7px] h-1 w-1 rounded-full bg-amber-500" />
+                            <span>
+                              Limiting factors: light intensity, CO₂, temperature
+                              <span className="ml-2 align-middle rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">p. 184</span>
+                            </span>
+                          </li>
+                        </ul>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {["Bio 101 Notes • p. 12", "Lecture 3 Slides • slide 18", "Textbook.pdf • p. 184"].map((c) => (
+                            <span
+                              key={c}
+                              className="rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-[11px] font-medium text-zinc-700"
+                            >
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Suggested prompts */}
+                      <div className="flex gap-2 pt-1 flex-wrap">
+                        {["Explain the Calvin cycle", "Quiz me on photosynthesis", "Make 10 flashcards"].map((prompt) => (
+                          <span
+                            key={prompt}
+                            className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1 text-xs text-zinc-700"
+                          >
+                            {prompt}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sources sidebar */}
+                    <div className="rounded-2xl border border-black/10 bg-white/60 px-4 py-3 backdrop-blur">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                          Sources
+                        </span>
+                        <span className="text-[11px] text-zinc-500">3</span>
+                      </div>
+                      <div className="mt-2 space-y-2">
+                        {[
+                          { label: "Bio 101 Notes", meta: "p. 12" },
+                          { label: "Lecture 3 Slides", meta: "slide 18" },
+                          { label: "Textbook.pdf", meta: "p. 184" },
+                        ].map((s) => (
+                          <div key={s.label} className="rounded-xl border border-black/5 bg-white/60 px-3 py-2">
+                            <p className="text-xs font-medium text-zinc-800">{s.label}</p>
+                            <p className="mt-0.5 text-[11px] text-zinc-500">{s.meta}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-3 rounded-xl border border-black/10 bg-white/70 px-3 py-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">Scope</p>
+                        <p className="mt-1 text-xs text-zinc-700">Chapter 3 • Photosynthesis</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -320,18 +574,18 @@ export default function Home() {
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h2 className="text-3xl font-semibold tracking-tight text-zinc-950">
-                    Built with enterprise constraints in mind.
+                    Built with serious privacy and security in mind.
                   </h2>
                   <p className="mt-3 max-w-3xl text-base leading-7 text-zinc-600">
-                    Keep tenant data isolated, minimize what&apos;s sent to the model, and maintain auditability from day one.
+                    Keep your data isolated, minimize what&apos;s sent to the model, and maintain a clear audit trail from day one.
                   </p>
                 </div>
                 <div className="w-fit self-center rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10 md:self-auto flex-shrink-0">
                   <a
                     className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                    href="/waitlist"
+                    href={PRIMARY_CTA_HREF}
                   >
-                    Talk to sales
+                    {PRIMARY_CTA_LABEL}
                   </a>
                 </div>
               </div>
@@ -345,9 +599,9 @@ export default function Home() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-zinc-950 mb-1">SOC 2 Type 2 Infrastructure</div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">Security-first infrastructure</div>
                       <p className="text-sm leading-6 text-zinc-600">
-                        Built on enterprise-grade infrastructure verified for security, availability, and confidentiality.
+                        Designed with secure defaults, least-privilege access, and auditing in mind so your library stays protected.
                       </p>
                     </div>
                   </div>
@@ -361,9 +615,9 @@ export default function Home() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-zinc-950 mb-1">End-to-End Encryption</div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">Encryption by default</div>
                       <p className="text-sm leading-6 text-zinc-600">
-                        Data is encrypted at rest (AES-256) and in transit (TLS 1.3). Your knowledge base is private by default.
+                        Data is encrypted in transit (TLS) and at rest. Your knowledge base is private by default.
                       </p>
                     </div>
                   </div>
@@ -377,9 +631,9 @@ export default function Home() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-zinc-950 mb-1">HIPAA & GDPR Ready</div>
+                      <div className="text-base font-semibold text-zinc-950 mb-1">Compliance-ready architecture</div>
                       <p className="text-sm leading-6 text-zinc-600">
-                        Architecture designed to support Business Associate Agreements (BAA) and data residency requirements.
+                        Built to support stricter requirements and data residency needs as the product expands.
                       </p>
                     </div>
                   </div>
@@ -392,38 +646,40 @@ export default function Home() {
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-4xl font-semibold tracking-tight text-zinc-950 mb-4">Pricing</h2>
               <p className="text-lg leading-8 text-zinc-600">
-                Team plans. Start small, upgrade when you&apos;re ready, and keep enterprise controls available from day one.
+                Three personal plans for solo learners, researchers, and professionals.
               </p>
               <div className="mt-4 flex items-center justify-center gap-2 text-sm">
-                <span className="text-zinc-500">Personal learning: coming soon —</span>
-                <a className="font-semibold text-zinc-900 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900 transition" href="/waitlist">
-                  join the waitlist
+                <span className="text-zinc-500">Billed monthly. Save 15% with annual billing.</span>
+              </div>
+              <div className="mt-1 flex items-center justify-center gap-2 text-sm">
+                <span className="text-zinc-500">All plans are in early access —</span>
+                <a className="font-semibold text-zinc-900 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900 transition" href={PRIMARY_CTA_HREF}>
+                  {PRIMARY_CTA_LABEL}
                 </a>
               </div>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
-              {/* Startup */}
+              {/* Personal */}
               <div className="bg-white/60 border border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl relative overflow-hidden group hover:shadow-md transition-all duration-500">
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Start-Up</h3>
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Personal</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-zinc-900">$250</span>
+                    <span className="text-4xl font-bold text-zinc-900">$12.99</span>
                     <span className="text-zinc-500">/month</span>
                   </div>
                   <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
-                    Perfect for small teams getting started with AI-powered research.
+                    For focused studying and getting cited answers from your notes.
                   </p>
                 </div>
 
                 <div className="flex-1">
-                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Features</div>
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">What&apos;s included</div>
                   <ul className="space-y-3">
                     {[
-                      "Up to 10 users",
-                      "Document + note ingestion",
-                      "Answers with citations",
-                      "Org-level workspace"
+                      "Upload key PDFs, docs, and slides",
+                      "Ask questions and get cited answers from your notes",
+                      "Keep a personal knowledge library organized in one place"
                     ].map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
                         <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -436,39 +692,76 @@ export default function Home() {
                 </div>
 
                 <div className="mt-10">
-                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
-                    Join waitlist
+                  <a href={PRIMARY_CTA_HREF} className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
+                    {PRIMARY_CTA_LABEL}
                   </a>
                 </div>
               </div>
 
-              {/* Business */}
+              {/* Personal+ */}
+              <div className="bg-white/60 border border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl relative overflow-hidden group hover:shadow-md transition-all duration-500">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Personal +</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-zinc-900">$19.99</span>
+                    <span className="text-zinc-500">/month</span>
+                  </div>
+                  <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
+                    For deep work and more intelligent reasoning on bigger collections of notes.
+                  </p>
+                </div>
+
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Personal, plus</div>
+                  <ul className="space-y-3">
+                    {[
+                      "Reason across larger sets of documents at once",
+                      "Richer synthesis for long-form questions and study sessions",
+                      "More room for the notebooks and topics you care about most"
+                    ].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
+                        <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-10">
+                  <a href={PRIMARY_CTA_HREF} className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
+                    {PRIMARY_CTA_LABEL}
+                  </a>
+                </div>
+              </div>
+
+              {/* Personal Pro */}
               <div className="bg-white/70 border border-black/10 rounded-[2.5rem] p-10 flex flex-col shadow-xl backdrop-blur-3xl relative overflow-hidden group hover:shadow-2xl hover:scale-[1.02] transition-all duration-500">
                 <div className="absolute top-6 right-6">
                   <span className="inline-flex items-center rounded-full bg-zinc-900/5 border border-black/5 px-3 py-1 text-xs font-medium text-zinc-900 backdrop-blur-sm">
-                    Most popular
+                    Best value
                   </span>
                 </div>
 
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Business</h3>
+                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Personal Pro</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-zinc-900">$500</span>
+                    <span className="text-4xl font-bold text-zinc-900">$29.99</span>
                     <span className="text-zinc-500">/month</span>
                   </div>
                   <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
-                    For growing teams requiring advanced controls and support.
+                    For people who want Thea as a true study partner: conversational, deeply grounded, and built for serious research.
                   </p>
                 </div>
 
                 <div className="flex-1">
-                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Start-Up, plus:</div>
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Personal +, plus</div>
                   <ul className="space-y-3">
                     {[
-                      "Up to 50 users",
-                      "Admin controls + role gating",
-                      "Priority support",
-                      "Advanced analytics"
+                      "Conversational AI tuned to your topics and materials",
+                      "Deeper reasoning and research across your entire knowledge base",
+                      "Early access to advanced features like Cross Search and Deep Thesis Projects"
                     ].map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
                         <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -481,46 +774,8 @@ export default function Home() {
                 </div>
 
                 <div className="mt-10">
-                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-white/50 text-sm font-semibold text-zinc-900 text-center shadow-sm hover:bg-white hover:border-black/20 transition-all duration-300">
-                    Join waitlist
-                  </a>
-                </div>
-              </div>
-
-              {/* Enterprise */}
-              <div className="bg-white/60 border border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl relative overflow-hidden group hover:shadow-md transition-all duration-500">
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-zinc-950 mb-2">Enterprise</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-zinc-900">Custom</span>
-                  </div>
-                  <p className="mt-4 text-sm text-zinc-600 leading-relaxed">
-                    Custom solutions for large organizations with specific needs.
-                  </p>
-                </div>
-
-                <div className="flex-1">
-                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-4">Everything in Business, plus:</div>
-                  <ul className="space-y-3">
-                    {[
-                      "Unlimited users",
-                      "SAML / SSO",
-                      "Advanced governance + audit",
-                      "Dedicated onboarding"
-                    ].map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-700">
-                        <svg className="h-5 w-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="mt-10">
-                  <a href="/waitlist" className="block w-full py-3 px-6 rounded-full border border-black/10 bg-zinc-900 text-sm font-semibold text-white text-center shadow-lg hover:bg-zinc-800 transition-all duration-300">
-                    Contact sales
+                  <a href={PRIMARY_CTA_HREF} className="block w-full py-3 px-6 rounded-full border border-black/10 bg-zinc-900 text-sm font-semibold text-white text-center shadow-lg hover:bg-zinc-800 transition-all duration-300">
+                    {PRIMARY_CTA_LABEL}
                   </a>
                 </div>
               </div>
@@ -556,6 +811,63 @@ export default function Home() {
               ))}
             </div>
           </section>
+
+          {/* Roadmap / what's coming next */}
+          <section className="mt-24">
+            <div className="rounded-[2rem] border border-black/10 bg-white/70 p-8 md:p-10 shadow-[0_22px_70px_-25px_rgba(0,0,0,0.18)] backdrop-blur-3xl">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-zinc-950">
+                    What&apos;s coming next
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-sm md:text-base leading-7 text-zinc-600">
+                    Thesis is in early access. We&apos;re shipping new capabilities for serious learners and
+                    researchers, with many of them arriving first for Personal Pro.
+                  </p>
+                </div>
+                <div className="w-fit rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
+                  <a
+                    href={PRIMARY_CTA_HREF}
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-white/95 px-6 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
+                  >
+                    {PRIMARY_CTA_LABEL}
+                  </a>
+                </div>
+              </div>
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="rounded-2xl border border-black/10 bg-white/80 p-5 shadow-sm">
+                  <p className="inline-flex items-center rounded-full bg-zinc-900/5 px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500 mb-3">
+                    Coming soon
+                  </p>
+                  <h3 className="text-sm font-semibold text-zinc-950 mb-2">Cross Search</h3>
+                  <p className="text-sm text-zinc-600 leading-6">
+                    Ask one question and search across all of your notebooks at once, so Thea can pull from
+                    every relevant source in your library.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-black/10 bg-white/80 p-5 shadow-sm">
+                  <p className="inline-flex items-center rounded-full bg-zinc-900/5 px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500 mb-3">
+                    In development
+                  </p>
+                  <h3 className="text-sm font-semibold text-zinc-950 mb-2">Deep Thesis Projects</h3>
+                  <p className="text-sm text-zinc-600 leading-6">
+                    Define long-running projects with goals, key sources, and milestones. Let Thea help you
+                    stay organized and surface what matters most.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-black/10 bg-white/80 p-5 shadow-sm">
+                  <p className="inline-flex items-center rounded-full bg-zinc-900/5 px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500 mb-3">
+                    On the roadmap
+                  </p>
+                  <h3 className="text-sm font-semibold text-zinc-950 mb-2">Smarter study flows</h3>
+                  <p className="text-sm text-zinc-600 leading-6">
+                    Guided study sessions, spaced review, and richer multi-step workflows to help you move
+                    from reading to real understanding faster.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
 
         {/* Enhanced Footer */}
@@ -570,7 +882,7 @@ export default function Home() {
                   <span className="text-lg font-semibold text-zinc-950">Thesis</span>
                 </Link>
                 <p className="mt-4 text-sm leading-6 text-zinc-600">
-                  Turn your knowledge into cited answers. Built for teams and students.
+                  Turn your knowledge into cited answers. Built for independent learners, students, and solo professionals.
                 </p>
                 {/* Social Links */}
                 <div className="mt-4 flex gap-3">
@@ -591,9 +903,10 @@ export default function Home() {
                 <h3 className="text-sm font-semibold text-zinc-950">Product</h3>
                 <ul className="mt-4 space-y-2">
                   <li><a onClick={(e) => scrollToSection(e, "how-it-works")} className="text-sm text-zinc-600 transition hover:text-zinc-900 cursor-pointer">How it works</a></li>
+                  <li><a onClick={(e) => scrollToSection(e, "meet-thea")} className="text-sm text-zinc-600 transition hover:text-zinc-900 cursor-pointer">Meet Thea</a></li>
                   <li><a onClick={(e) => scrollToSection(e, "pricing")} className="text-sm text-zinc-600 transition hover:text-zinc-900 cursor-pointer">Pricing</a></li>
                   <li><a onClick={(e) => scrollToSection(e, "security")} className="text-sm text-zinc-600 transition hover:text-zinc-900 cursor-pointer">Security</a></li>
-                  <li><a href="/waitlist" className="text-sm text-zinc-600 transition hover:text-zinc-900">Waitlist</a></li>
+                  <li><a href={PRIMARY_CTA_HREF} className="text-sm text-zinc-600 transition hover:text-zinc-900">Waitlist</a></li>
                 </ul>
               </div>
 
@@ -684,7 +997,7 @@ function NewsletterForm() {
         setMessage("Thanks for subscribing!");
         (e.target as HTMLFormElement).reset();
       }
-    } catch (error) {
+    } catch {
       setStatus("error");
       setMessage("Something went wrong. Please try again.");
     }

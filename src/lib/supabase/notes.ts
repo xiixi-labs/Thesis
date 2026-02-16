@@ -17,8 +17,8 @@ export type FolderNote = {
 /**
  * Get notes for a specific folder
  */
-export async function getFolderNotes(folderId: string): Promise<string> {
-    const supabase = createClient();
+export async function getFolderNotes(folderId: string, accessToken?: string): Promise<string> {
+    const supabase = createClient(accessToken);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
@@ -41,8 +41,8 @@ export async function getFolderNotes(folderId: string): Promise<string> {
 /**
  * Save or update notes for a folder
  */
-export async function saveFolderNotes(folderId: string, content: string): Promise<void> {
-    const supabase = createClient();
+export async function saveFolderNotes(folderId: string, content: string, accessToken?: string): Promise<void> {
+    const supabase = createClient(accessToken);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
@@ -67,8 +67,8 @@ export async function saveFolderNotes(folderId: string, content: string): Promis
 /**
  * Delete notes for a folder
  */
-export async function deleteFolderNotes(folderId: string): Promise<void> {
-    const supabase = createClient();
+export async function deleteFolderNotes(folderId: string, accessToken?: string): Promise<void> {
+    const supabase = createClient(accessToken);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');

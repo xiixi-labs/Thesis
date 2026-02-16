@@ -14,9 +14,14 @@ export const supabaseAdmin = serviceRoleKey
     : supabase; // Fallback (though ideally should fail if missing on server)
 
 // Export createClient function for API compatibility
-export function createClient() {
+export function createClient(accessToken?: string) {
+    const options = accessToken
+        ? { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
+        : {};
+
     return createSupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key',
+        options
     );
 }

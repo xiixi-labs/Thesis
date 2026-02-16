@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Modal } from "@/components/Modal";
@@ -83,6 +84,7 @@ export default function FolderPage() {
   const params = useParams<{ folderId: string }>();
   const router = useRouter();
   const { accessibleFolders, createNotebook } = useWorkspace();
+  const { getToken } = useAuth();
   const [isDragOver, setIsDragOver] = useState(false);
   const [notes, setNotes] = useState("");
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "">("");
@@ -130,14 +132,18 @@ export default function FolderPage() {
 
   // Load notes from Supabase on mount
   useEffect(() => {
-    if (folderId) {
-      getFolderNotes(folderId)
-        .then((content) => {
-          if (content) setNotes(content);
-        })
-        .catch(console.error);
+    async function loadNotes() {
+      if (!folderId) return;
+      try {
+        const token = await getToken({ template: "supabase" });
+        const content = await getFolderNotes(folderId, token || undefined);
+        if (content) setNotes(content);
+      } catch (error) {
+        console.error("Error loading notes:", error);
+      }
     }
-  }, [folderId]);
+    loadNotes();
+  }, [folderId, getToken]);
 
   // Auto-save notes to Supabase with debouncing
   useEffect(() => {
@@ -148,17 +154,17 @@ export default function FolderPage() {
       clearSaveStatusTimeoutRef.current = null;
     }
 
-    const timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(async () => {
       setSaveStatus("saving");
-      saveFolderNotes(folderId, notes)
-        .then(() => {
-          setSaveStatus("saved");
-          clearSaveStatusTimeoutRef.current = setTimeout(() => setSaveStatus(""), 2000);
-        })
-        .catch((error) => {
-          console.error("Error saving notes:", error);
-          setSaveStatus("");
-        });
+      try {
+        const token = await getToken({ template: "supabase" });
+        await saveFolderNotes(folderId, notes, token || undefined);
+        setSaveStatus("saved");
+        clearSaveStatusTimeoutRef.current = setTimeout(() => setSaveStatus(""), 2000);
+      } catch (error) {
+        console.error("Error saving notes:", error);
+        setSaveStatus("");
+      }
     }, 1000);
 
     return () => clearTimeout(timeoutId);
@@ -196,9 +202,10 @@ export default function FolderPage() {
 
     try {
       // Upload to Supabase Storage
+      const token = await getToken({ template: "supabase" });
       const fileRecord = await uploadFile(folderId!, file, (progress) => {
         setUploadProgress(progress);
-      });
+      }, token || undefined);
 
       // Transform record for display
       const newFile = {
@@ -218,30 +225,34 @@ export default function FolderPage() {
       setUploadError("Upload failed. Please try again.");
       setUploadProgress(null);
     }
-  }, [folderId]);
+  }, [folderId, getToken]);
 
   // Load files from Supabase
   useEffect(() => {
-    if (folderId) {
-      getFolderFiles(folderId)
-        .then(files => {
-          setUploadedFiles(files.map(f => ({
-            id: f.id,
-            title: f.name,
-            size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
-            uploaded: new Date(f.uploaded_at).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            }),
-            type: f.type,
-            url: f.url,
-            storagePath: f.storage_path
-          })));
-        })
-        .catch(console.error);
+    async function loadFiles() {
+      if (!folderId) return;
+      try {
+        const token = await getToken({ template: "supabase" });
+        const files = await getFolderFiles(folderId, token || undefined);
+        setUploadedFiles(files.map(f => ({
+          id: f.id,
+          title: f.name,
+          size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+          uploaded: new Date(f.uploaded_at).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          type: f.type,
+          url: f.url,
+          storagePath: f.storage_path
+        })));
+      } catch (error) {
+        console.error("Error loading files:", error);
+      }
     }
-  }, [folderId]);
+    loadFiles();
+  }, [folderId, getToken]);
 
 
   // Combined docs list (only uploaded files for now)
@@ -257,7 +268,8 @@ export default function FolderPage() {
       if (!doc.storagePath) return;
 
       try {
-        const blob = await downloadFile(doc.storagePath);
+        const token = await getToken({ template: "supabase" });
+        const blob = await downloadFile(doc.storagePath, token || undefined);
         const objectUrl = URL.createObjectURL(blob);
         window.open(objectUrl, "_blank", "noopener,noreferrer");
         // Best-effort cleanup after the browser has had time to load
@@ -268,7 +280,7 @@ export default function FolderPage() {
         setTimeout(() => setUploadError(""), 3000);
       }
     },
-    []
+    [getToken]
   );
 
   // Folder management state
