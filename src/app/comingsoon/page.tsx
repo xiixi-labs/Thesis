@@ -1,4 +1,5 @@
 "use client";
+import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 
 import React, { useState } from 'react';
 import Link from 'next/link';

@@ -1,4 +1,4 @@
-
+import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -33,13 +33,7 @@ export default function SignInPage() {
 
             {/* Subtle Grain Texture Overlay */}
             {/* Salt-and-pepper grain texture overlay */}
-            <div
-                className="pointer-events-none absolute inset-0 opacity-[0.08]"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 1 1 1 0 0 0'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 1'/%3E%3CfeFuncG type='discrete' tableValues='0 1'/%3E%3CfeFuncB type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                    backgroundSize: '200px 200px'
-                }}
-            />
+            <NoiseOverlay />
 
             {/* Simple Back Button Header */}
             <header className="relative z-10 px-6 py-6">
@@ -71,7 +65,7 @@ export default function SignInPage() {
                             appearance={{
                                 elements: {
                                     rootBox: "w-full",
-                                    card: "bg-white/80 backdrop-blur-3xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_0_0_1px_rgba(255,255,255,0.5)] rounded-3xl p-8 md:p-12",
+                                    card: "bg-white/80 backdrop-blur-3xl border border-white/40 shadow-xl shadow-zinc-200/50 rounded-3xl p-8 md:p-12",
                                     headerTitle: "text-zinc-950 font-bold text-2xl md:text-3xl tracking-tight",
                                     headerSubtitle: "text-zinc-500 text-sm md:text-base mt-2 md:mt-3",
                                     socialButtonsBlockButton: "text-zinc-700 font-medium hover:text-zinc-900 bg-white/70 hover:bg-white/90 border-zinc-200/80 rounded-2xl transition-all duration-200 h-11 md:h-12 hover:shadow-md hover:scale-[1.01] backdrop-blur-sm",
@@ -115,19 +109,24 @@ export default function SignInPage() {
                         </h1>
 
                         <p className="mt-6 text-lg leading-relaxed text-zinc-600 md:text-xl">
-                            Get cited answers from your knowledge base—instantly.
+                            Get cited answers from your knowledge base, instantly.
                         </p>
 
                         <div className="mt-10 flex flex-col gap-3">
-                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-emerald-500/20 bg-emerald-50/50 px-4 py-2.5 backdrop-blur-sm transition-all hover:bg-emerald-50/70">
+                            {/* Emerald Pill - Hybrid */}
+                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-white/20 bg-white/50 px-4 py-2.5 backdrop-blur-md transition-all hover:bg-white/60">
                                 <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
                                 <span className="text-sm font-medium text-zinc-700">Ask across PDFs, slides, and notes</span>
                             </div>
-                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-indigo-500/20 bg-indigo-50/50 px-4 py-2.5 backdrop-blur-sm transition-all hover:bg-indigo-50/70">
+
+                            {/* Indigo Pill - Hybrid */}
+                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-white/20 bg-white/50 px-4 py-2.5 backdrop-blur-md transition-all hover:bg-white/60">
                                 <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.6)]" />
                                 <span className="text-sm font-medium text-zinc-700">Get answers with citations</span>
                             </div>
-                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-purple-500/20 bg-purple-50/50 px-4 py-2.5 backdrop-blur-sm transition-all hover:bg-purple-50/70">
+
+                            {/* Purple Pill - Hybrid */}
+                            <div className="inline-flex w-fit items-center gap-3 rounded-full border border-white/20 bg-white/50 px-4 py-2.5 backdrop-blur-md transition-all hover:bg-white/60">
                                 <div className="h-2 w-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.6)]" />
                                 <span className="text-sm font-medium text-zinc-700">Secure and private</span>
                             </div>

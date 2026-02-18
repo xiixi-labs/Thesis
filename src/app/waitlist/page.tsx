@@ -1,5 +1,6 @@
 "use client";
 
+import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { joinWaitlist } from '@/app/actions/waitlist';
@@ -35,15 +36,7 @@ const ThesisBackground = ({ children, className = "" }: { children: React.ReactN
 			style={{ animation: 'blob-float-alt 26s ease-in-out infinite 3s' }}
 		/>
 
-		{/* Subtle Grain Texture Overlay */}
-		{/* Salt-and-pepper grain texture overlay */}
-		<div
-			className="pointer-events-none absolute inset-0 opacity-[0.08]"
-			style={{
-				backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 1 1 1 0 0 0'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='discrete' tableValues='0 1'/%3E%3CfeFuncG type='discrete' tableValues='0 1'/%3E%3CfeFuncB type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-				backgroundSize: '200px 200px'
-			}}
-		/>
+		<NoiseOverlay />
 
 		{children}
 	</div>
@@ -150,12 +143,6 @@ export default function WaitlistPage() {
 			</header>
 
 			<div className="flex-1 flex flex-col justify-center pt-16 md:pt-24 px-6 md:px-24 max-w-5xl mx-auto w-full relative z-10">
-				<div
-					className="text-sm font-semibold tracking-wider uppercase text-indigo-500 mb-3 md:mb-6 opacity-0"
-					style={{ animation: 'slide-up 0.9s ease-out 0.3s forwards' }}
-				>
-					Thesis + Gemini
-				</div>
 				<h1
 					className="text-4xl md:text-8xl font-semibold text-zinc-950 tracking-tight leading-[1.1] opacity-0"
 					style={{ animation: 'slide-up 0.9s ease-out 0.4s forwards' }}
@@ -166,7 +153,7 @@ export default function WaitlistPage() {
 			</div>
 
 			<div
-				className="w-full bg-white/80 backdrop-blur-3xl border-t border-white/60 shadow-[0_-8px_32px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.5)] rounded-t-3xl p-4 md:p-12 mt-6 md:mt-12 pb-6 md:pb-24 relative z-10 opacity-0"
+				className="w-full bg-white/80 backdrop-blur-3xl border-t border-white/40 shadow-[0_-8px_32px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.5)] rounded-t-3xl p-4 md:p-12 mt-6 md:mt-12 pb-6 md:pb-24 relative z-10 opacity-0"
 				style={{ animation: 'slide-up 0.9s ease-out 0.6s forwards' }}
 			>
 				<div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-12 items-center px-2 md:px-6">
@@ -176,15 +163,15 @@ export default function WaitlistPage() {
 
 						{/* Feature Highlights */}
 						<div className="flex flex-wrap gap-2 mt-4">
-							<div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-50/50 px-3 py-1.5 backdrop-blur-sm">
+							<div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/50 px-3 py-1.5 backdrop-blur-md">
 								<div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
 								<span className="text-xs font-medium text-zinc-700">AI-Powered Insights</span>
 							</div>
-							<div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-50/50 px-3 py-1.5 backdrop-blur-sm">
+							<div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/50 px-3 py-1.5 backdrop-blur-md">
 								<div className="h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
 								<span className="text-xs font-medium text-zinc-700">Smart Citations</span>
 							</div>
-							<div className="inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-50/50 px-3 py-1.5 backdrop-blur-sm">
+							<div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/50 px-3 py-1.5 backdrop-blur-md">
 								<div className="h-1.5 w-1.5 rounded-full bg-purple-500 shadow-[0_0_6px_rgba(168,85,247,0.6)]" />
 								<span className="text-xs font-medium text-zinc-700">Secure & Private</span>
 							</div>
@@ -192,7 +179,7 @@ export default function WaitlistPage() {
 					</div>
 					<div className="w-full md:w-auto md:min-w-[400px]">
 						{/* Premium Glass Card for Form */}
-						<div className="rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 p-6 shadow-lg">
+						<div className="rounded-2xl bg-white/70 backdrop-blur-xl border border-white/40 p-6 shadow-xl shadow-zinc-200/50">
 							<WaitlistForm layout="grid" />
 						</div>
 					</div>

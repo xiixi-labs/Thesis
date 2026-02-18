@@ -11,7 +11,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
+  --animate-fade-in-up: fade-in-up 0.5s ease-out forwards;
 
   @keyframes fade-in-up {
     0% {
@@ -193,6 +193,48 @@ body {
   }
 }
 
+@keyframes liquid-gradient {
+  0% {
+    --gradient-angle: 180deg;
+  }
+
+  25% {
+    --gradient-angle: 270deg;
+  }
+
+  50% {
+    --gradient-angle: 360deg;
+  }
+
+  75% {
+    --gradient-angle: 450deg;
+  }
+
+  100% {
+    --gradient-angle: 540deg;
+  }
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 180deg;
+  inherits: false;
+}
+
+.liquid-gradient-text {
+  background-image: conic-gradient(from var(--gradient-angle) at 50% 50%,
+      #ff0080,
+      #ff8c00,
+      #40e0d0,
+      #8a2be2,
+      #ff0080);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: liquid-gradient 4s linear infinite;
+}
+
 /* Hide scrollbar for mobile breadcrumbs */
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -210,4 +252,14 @@ body {
   will-change: backdrop-filter;
   backdrop-filter: blur(var(--tw-backdrop-blur));
   -webkit-backdrop-filter: blur(var(--tw-backdrop-blur));
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
 }
