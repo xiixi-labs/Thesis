@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getUser, getAccessibleFolders } from "@/lib/workspace";
-import { generateEmbedding, generateAnswer, contextualizeQuery } from "@/lib/gemini";
+import { generateEmbedding, generateAnswerStream, contextualizeQuery } from "@/lib/gemini";
 
 /** Escape SQL LIKE/ILIKE wildcards so user input is treated as literal text. */
 function escapeLikePattern(input: string): string {
@@ -138,24 +138,7 @@ export async function POST(req: NextRequest) {
             }));
         }
 
-        // 4. Generate Answer via Gemini
-        let answer = "";
-        try {
-            if (finalResults.length === 0) {
-                answer = await generateAnswer("No relevant documents found.", query, history);
-            } else {
-                const context = finalResults.map((r: any) =>
-                    `Document: ${r.doc_name}\nContent: ${r.content}`
-                ).join("\n\n");
-
-                answer = await generateAnswer(context, query, history);
-            }
-        } catch (aiError: any) {
-            console.error("AI generation failed:", aiError);
-            answer = `I apologize, but I'm having trouble generating a response right now. Error: ${aiError.message || 'Unknown error'}`;
-        }
-
-        // 5. Format Citations
+        // 3. Format Citations
         const citations = finalResults.map((r: any, i: number) => ({
             id: `cit_${i}`,
             source: r.doc_name,
@@ -163,28 +146,60 @@ export async function POST(req: NextRequest) {
             snippet: r.content.substring(0, 100)
         }));
 
-        // 6. Save Assistant Message (Optional)
-        try {
-            if (conversationId) {
-                await supabaseAdmin.from("messages").insert({
-                    conversation_id: conversationId,
-                    role: "assistant",
-                    content: answer,
-                    citations: citations
-                });
+        // 4. Stream Answer via Gemini SSE
+        const context = finalResults.length === 0
+            ? "No relevant documents found."
+            : finalResults.map((r: any) =>
+                `Document: ${r.doc_name}\nContent: ${r.content}`
+            ).join("\n\n");
 
-                // Update conversation timestamp
-                await supabaseAdmin.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId);
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+            async start(controller) {
+                // Send metadata (conversationId + citations) first
+                controller.enqueue(encoder.encode(`event: meta\ndata: ${JSON.stringify({ conversationId, citations })}\n\n`));
+
+                let fullAnswer = "";
+                try {
+                    for await (const chunk of generateAnswerStream(context, query, history)) {
+                        fullAnswer += chunk;
+                        controller.enqueue(encoder.encode(`event: text\ndata: ${JSON.stringify({ content: chunk })}\n\n`));
+                    }
+                } catch (aiError: any) {
+                    console.error("AI generation failed:", aiError);
+                    const errorMsg = `I apologize, but I'm having trouble generating a response right now. Error: ${aiError.message || 'Unknown error'}`;
+                    controller.enqueue(encoder.encode(`event: text\ndata: ${JSON.stringify({ content: errorMsg })}\n\n`));
+                    fullAnswer = errorMsg;
+                }
+
+                controller.enqueue(encoder.encode(`event: done\ndata: {}\n\n`));
+
+                // 5. Save Assistant Message (Optional) — persists after stream completes
+                try {
+                    if (conversationId) {
+                        await supabaseAdmin.from("messages").insert({
+                            conversation_id: conversationId,
+                            role: "assistant",
+                            content: fullAnswer,
+                            citations: citations
+                        });
+
+                        await supabaseAdmin.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId);
+                    }
+                } catch (persistError) {
+                    console.warn("Failed to save assistant message:", persistError);
+                }
+
+                controller.close();
             }
-        } catch (persistError) {
-            console.warn("Failed to save assistant message:", persistError);
-        }
+        });
 
-        return NextResponse.json({
-            role: "assistant",
-            content: answer,
-            citations,
-            conversationId
+        return new Response(stream, {
+            headers: {
+                "Content-Type": "text/event-stream",
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+            }
         });
 
     } catch (e: any) {

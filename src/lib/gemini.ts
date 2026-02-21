@@ -72,19 +72,11 @@ export async function contextualizeQuery(query: string, history: { role: string,
     }
 }
 
-export async function generateAnswer(context: string, question: string, history: { role: string, content: string }[] = [], retries = 5) {
-    if (!apiKey) {
-        return "I cannot answer because the GOOGLE_API_KEY is missing.";
-    }
-
-    // Use consistent model
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    // Format history for the prompt
+function buildAnswerPrompt(context: string, question: string, history: { role: string, content: string }[] = []) {
     const historyText = history.map(msg => `${msg.role === 'user' ? 'User' : 'Thea'}: ${msg.content}`).join('\n\n');
 
-    const prompt = `You are a helpful AI assistant named Thea. You have access to the following retrieved context to answer the user's question.
-    
+    return `You are a helpful AI assistant named Thea. You have access to the following retrieved context to answer the user's question.
+
 INSTRUCTIONS:
 1. Use the provided Context to answer the user's question.
 2. If the answer isn't in the context, you can use your general knowledge but mention that it's not from the documents.
@@ -99,6 +91,15 @@ ${context}
 
 Current Question: ${question}
 `;
+}
+
+export async function generateAnswer(context: string, question: string, history: { role: string, content: string }[] = [], retries = 5) {
+    if (!apiKey) {
+        return "I cannot answer because the GOOGLE_API_KEY is missing.";
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const prompt = buildAnswerPrompt(context, question, history);
 
     for (let i = 0; i < retries; i++) {
         try {
@@ -109,7 +110,6 @@ Current Question: ${question}
             const isRateLimit = error?.status === 503 || error?.status === 429 || error?.message?.includes("overloaded") || error?.message?.includes("quota");
 
             if (isRateLimit && i < retries - 1) {
-                // Exponential backoff: 2s, 4s, 8s, 16s, 32s
                 const waitTime = Math.pow(2, i + 1) * 1000;
                 console.log(`Generation rate limit (attempt ${i + 1}/${retries}), retrying in ${waitTime}ms...`);
                 await delay(waitTime);
@@ -120,4 +120,42 @@ Current Question: ${question}
     }
 
     throw new Error("Failed to generate answer after retries (Rate Limit Exceeded)");
+}
+
+export async function* generateAnswerStream(
+    context: string,
+    question: string,
+    history: { role: string, content: string }[] = [],
+    retries = 5
+): AsyncGenerator<string> {
+    if (!apiKey) {
+        yield "I cannot answer because the GOOGLE_API_KEY is missing.";
+        return;
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const prompt = buildAnswerPrompt(context, question, history);
+
+    for (let i = 0; i < retries; i++) {
+        try {
+            const result = await model.generateContentStream(prompt);
+            for await (const chunk of result.stream) {
+                const text = chunk.text();
+                if (text) yield text;
+            }
+            return;
+        } catch (error: any) {
+            const isRateLimit = error?.status === 503 || error?.status === 429 || error?.message?.includes("overloaded") || error?.message?.includes("quota");
+
+            if (isRateLimit && i < retries - 1) {
+                const waitTime = Math.pow(2, i + 1) * 1000;
+                console.log(`Stream generation rate limit (attempt ${i + 1}/${retries}), retrying in ${waitTime}ms...`);
+                await delay(waitTime);
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    throw new Error("Failed to generate answer stream after retries (Rate Limit Exceeded)");
 }

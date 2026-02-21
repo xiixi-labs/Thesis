@@ -82,6 +82,7 @@ export default function TheaClient() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
@@ -343,12 +344,17 @@ export default function TheaClient() {
   const query = searchParams.get("q");
   const hasAutoSent = useRef(false);
 
+  const stopGenerating = useCallback(() => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    setIsLoading(false);
+  }, []);
+
   const submitMessage = async (textOverride?: string) => {
     const textToSend = textOverride || input;
     if (!textToSend.trim() || isLoading) return;
 
     if (isListening) {
-      // Stop listening when user sends.
       try {
         recognitionRef.current?.stop?.();
       } catch {
@@ -363,15 +369,19 @@ export default function TheaClient() {
       content: textToSend.trim(),
     };
 
-    // Prepare history for API
     const messagesToSend = [...messages, userMessage].map(m => ({
       role: m.role,
       content: m.content
     }));
 
+    const assistantMsgId = (Date.now() + 1).toString();
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     try {
       const res = await fetch("/api/chat", {
@@ -384,57 +394,94 @@ export default function TheaClient() {
           folderIds: selectedFolderIds,
           conversationId: activeConversationId
         }),
+        signal: abortController.signal,
       });
 
       if (!res.ok) throw new Error("Failed to fetch response");
+      if (!res.body) throw new Error("No response body");
 
-      const data = await res.json();
+      // Add empty assistant message placeholder for streaming
+      setMessages((prev) => [...prev, { id: assistantMsgId, role: "assistant" as const, content: "" }]);
 
-      // If new conversation, update URL
-      if (!activeConversationId && data.conversationId) {
-        setActiveConversationId(data.conversationId);
-        // Use replace to avoid back-nav cycles, scroll:false keeps position
-        router.replace(`/dashboard/thea?chatId=${data.conversationId}`, { scroll: false });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let pendingCitations: Citation[] = [];
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop()!; // Keep incomplete line in buffer
+
+        let eventType = "";
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            eventType = line.slice(7);
+          } else if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (eventType === "meta") {
+                if (!activeConversationId && data.conversationId) {
+                  setActiveConversationId(data.conversationId);
+                  router.replace(`/dashboard/thea?chatId=${data.conversationId}`, { scroll: false });
+                }
+                if (data.citations) pendingCitations = data.citations;
+              } else if (eventType === "text") {
+                setMessages((prev) => {
+                  const updated = [...prev];
+                  const lastIdx = updated.length - 1;
+                  if (updated[lastIdx]?.id === assistantMsgId) {
+                    updated[lastIdx] = {
+                      ...updated[lastIdx],
+                      content: updated[lastIdx].content + data.content,
+                    };
+                  }
+                  return updated;
+                });
+              } else if (eventType === "done") {
+                // Attach citations to the completed message
+                setMessages((prev) => {
+                  const updated = [...prev];
+                  const lastIdx = updated.length - 1;
+                  if (updated[lastIdx]?.id === assistantMsgId) {
+                    updated[lastIdx] = { ...updated[lastIdx], citations: pendingCitations };
+                  }
+                  return updated;
+                });
+              }
+            } catch {
+              // Ignore malformed SSE data
+            }
+            eventType = "";
+          }
+        }
+      }
+    } catch (e: unknown) {
+      // If the user aborted, keep partial content — don't show error
+      if (e instanceof DOMException && e.name === "AbortError") {
+        return;
       }
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: data.content,
-        citations: data.citations,
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (e: unknown) {
       console.error("Chat error:", e);
-
-      // Try to get the actual error message from the API
       let errorText = "I'm having trouble connecting to your library right now. Please try again.";
       if (e instanceof Error && e.message) {
         errorText = e.message;
       }
-      try {
-        if (typeof e === "object" && e && "response" in e) {
-          const response = (e as { response?: unknown }).response;
-          if (response && typeof response === "object" && "json" in response) {
-            const errorData = await (response as { json: () => Promise<unknown> }).json();
-            if (typeof errorData === "object" && errorData) {
-              const maybeError = (errorData as { error?: unknown; message?: unknown }).error;
-              const maybeMessage = (errorData as { error?: unknown; message?: unknown }).message;
-              if (typeof maybeError === "string" && maybeError) errorText = maybeError;
-              else if (typeof maybeMessage === "string" && maybeMessage) errorText = maybeMessage;
-            }
-          }
-        }
-      } catch { }
 
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: errorText,
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      // If we already added a placeholder, replace it with error
+      setMessages((prev) => {
+        const hasPlaceholder = prev.some(m => m.id === assistantMsgId);
+        if (hasPlaceholder) {
+          return prev.map(m => m.id === assistantMsgId ? { ...m, content: errorText } : m);
+        }
+        return [...prev, { id: assistantMsgId, role: "assistant" as const, content: errorText }];
+      });
     } finally {
+      abortControllerRef.current = null;
       setIsLoading(false);
     }
   };
@@ -741,7 +788,8 @@ export default function TheaClient() {
                   </div>
                 ))}
 
-                {isLoading && (
+                {/* Show loading dots only before streaming starts (last message is user's) */}
+                {isLoading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
                   <div className="flex items-start gap-4">
                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
                       <TheaMark className="h-5 w-5" />
@@ -798,13 +846,24 @@ export default function TheaClient() {
               </div>
 
               <div className="flex-shrink-0">
-                <button
-                  type="submit"
-                  disabled={!input.trim() || isLoading}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-400"
-                >
-                  <ArrowUpIcon className="h-6 w-6 stroke-[2.5px]" />
-                </button>
+                {isLoading ? (
+                  <button
+                    type="button"
+                    onClick={stopGenerating}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-sm transition-all hover:bg-red-700"
+                    aria-label="Stop generating"
+                  >
+                    <StopIcon className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!input.trim()}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-400"
+                  >
+                    <ArrowUpIcon className="h-6 w-6 stroke-[2.5px]" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -942,3 +1001,10 @@ export default function TheaClient() {
 
 
 
+function StopIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+    </svg>
+  );
+}
