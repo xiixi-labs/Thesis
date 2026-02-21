@@ -122,7 +122,7 @@ export async function updateConversationTitle(conversationId: string, title: str
  */
 export async function saveMessage(conversationId: string, role: string, content: string, citations?: any[]) {
     const { userId } = await auth();
-    if (!userId) return null; // Background tasks might not have auth context? 
+    if (!userId) return null; // Background tasks might not have auth context?
     // Actually, saveMessage usually called from Server Action which has auth context.
 
     // For assistant messages generated in background, we might need to bypass user check if called internally?
@@ -148,4 +148,36 @@ export async function saveMessage(conversationId: string, role: string, content:
     }
 
     return data;
+}
+
+/**
+ * Updates message feedback (thumbs up/down).
+ * @param messageId The message ID
+ * @param feedback 1 = thumbs up, -1 = thumbs down, 0 = clear feedback
+ */
+export async function updateMessageFeedback(messageId: string, feedback: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    // Verify the message belongs to a conversation owned by this user
+    const { data: message } = await supabaseAdmin
+        .from("messages")
+        .select("conversation_id")
+        .eq("id", messageId)
+        .single();
+
+    if (!message) throw new Error("Message not found");
+
+    const { data: conv } = await supabaseAdmin
+        .from("conversations")
+        .select("user_id")
+        .eq("id", message.conversation_id)
+        .single();
+
+    if (!conv || conv.user_id !== userId) throw new Error("Unauthorized");
+
+    await supabaseAdmin
+        .from("messages")
+        .update({ feedback })
+        .eq("id", messageId);
 }
