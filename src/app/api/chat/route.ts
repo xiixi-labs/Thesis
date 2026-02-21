@@ -4,6 +4,63 @@ import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getUser, getAccessibleFolders } from "@/lib/workspace";
 import { generateEmbedding, generateAnswer, contextualizeQuery } from "@/lib/gemini";
 
+/**
+ * Extracts the most relevant snippet from chunk content by finding
+ * the best window around query term matches.
+ */
+function extractRelevantSnippet(content: string, query: string, maxLength = 150): string {
+    if (!content || content.length <= maxLength) return content;
+
+    // Tokenize query into meaningful words (3+ chars)
+    const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length >= 3);
+    const lowerContent = content.toLowerCase();
+
+    // Score each position by how many query terms appear nearby
+    let bestStart = 0;
+    let bestScore = -1;
+
+    for (let i = 0; i < content.length - maxLength; i += 20) {
+        const window = lowerContent.substring(i, i + maxLength);
+        let score = 0;
+        for (const term of queryTerms) {
+            const idx = window.indexOf(term);
+            if (idx !== -1) {
+                score += 1;
+                // Bonus if term appears early in the window
+                score += (maxLength - idx) / maxLength * 0.5;
+            }
+        }
+        if (score > bestScore) {
+            bestScore = score;
+            bestStart = i;
+        }
+    }
+
+    const snippet = content.substring(bestStart, bestStart + maxLength).trim();
+    const prefix = bestStart > 0 ? "…" : "";
+    const suffix = bestStart + maxLength < content.length ? "…" : "";
+    return `${prefix}${snippet}${suffix}`;
+}
+
+/**
+ * Deduplicates results by document, keeping the chunk with highest similarity
+ * per document while collecting all chunk positions.
+ */
+function deduplicateCitations(results: any[]): any[] {
+    const byDoc = new Map<string, any>();
+    for (const r of results) {
+        const key = r.document_id;
+        const existing = byDoc.get(key);
+        if (!existing || (r.similarity ?? 0) > (existing.similarity ?? 0)) {
+            byDoc.set(key, { ...r, chunk_positions: [r.chunk_index] });
+        } else {
+            // Track additional chunk positions for this document
+            existing.chunk_positions.push(r.chunk_index);
+        }
+    }
+    return Array.from(byDoc.values());
+}
+
 export async function POST(req: NextRequest) {
     const userId = req.headers.get("x-user-id");
     if (!userId) {
@@ -115,7 +172,8 @@ export async function POST(req: NextRequest) {
                     id: doc.id,
                     document_id: doc.id,
                     content: doc.content,
-                    similarity: 0
+                    similarity: 0,
+                    chunk_index: null // Keyword fallback has no chunk position
                 }));
             }
         }
@@ -149,13 +207,27 @@ export async function POST(req: NextRequest) {
             answer = `I apologize, but I'm having trouble generating a response right now. Error: ${aiError.message || 'Unknown error'}`;
         }
 
-        // 4. Format Citations
-        const citations = finalResults.map((r: any, i: number) => ({
-            id: `cit_${i}`,
-            source: r.doc_name,
-            page: "Page 1",
-            snippet: r.content.substring(0, 100)
-        }));
+        // 4. Format Citations (deduplicated by document, with relevant excerpts)
+        const uniqueResults = deduplicateCitations(finalResults);
+        const citations = uniqueResults.map((r: any, i: number) => {
+            // Build a position label from chunk_index
+            const positions: number[] = (r.chunk_positions ?? []).filter((p: any) => p != null).sort((a: number, b: number) => a - b);
+            let page: string;
+            if (positions.length === 0) {
+                page = "Full document";
+            } else if (positions.length === 1) {
+                page = `Section ${positions[0] + 1}`;
+            } else {
+                page = `Sections ${positions.map((p: number) => p + 1).join(", ")}`;
+            }
+
+            return {
+                id: `cit_${i}`,
+                source: r.doc_name,
+                page,
+                snippet: extractRelevantSnippet(r.content, query)
+            };
+        });
 
         // 5. Save Assistant Message (Optional)
         try {

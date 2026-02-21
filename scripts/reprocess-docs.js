@@ -91,13 +91,15 @@ async function run() {
         const chunks = splitText(doc.content);
         let inserted = 0;
 
-        for (const chunk of chunks) {
+        for (let i = 0; i < chunks.length; i++) {
+            const chunk = chunks[i];
             if (chunk.length < 10) continue; // New limit
             try {
                 const embedding = await generateEmbedding(chunk);
                 await supabase.from('document_chunks').insert({
                     document_id: doc.id,
                     content: chunk,
+                    chunk_index: i,
                     embedding
                 });
                 inserted++;
