@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
             console.warn("Chat persistence unavailable:", persistError);
         }
 
-        // 1. Validate Scope
+        // 2. Validate Scope
         const accessible = getAccessibleFolders(user);
         const accessibleIds = new Set(accessible.map(f => f.id));
 
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
             targetFolderIds = folderIds.filter((id: string) => accessibleIds.has(id));
         }
 
-        // 2. Perform Retrieval via Gemini Embeddings
+        // 3. Perform Retrieval via Gemini Embeddings
         let results: any[] = [];
 
         try {
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
             }));
         }
 
-        // 3. Generate Answer via Gemini
+        // 4. Generate Answer via Gemini
         let answer = "";
         try {
             if (finalResults.length === 0) {
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
             answer = `I apologize, but I'm having trouble generating a response right now. Error: ${aiError.message || 'Unknown error'}`;
         }
 
-        // 4. Format Citations
+        // 5. Format Citations
         const citations = finalResults.map((r: any, i: number) => ({
             id: `cit_${i}`,
             source: r.doc_name,
@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
             snippet: r.content.substring(0, 100)
         }));
 
-        // 5. Save Assistant Message (Optional)
+        // 6. Save Assistant Message (Optional)
         try {
             if (conversationId) {
                 await supabaseAdmin.from("messages").insert({
