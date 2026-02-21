@@ -66,8 +66,7 @@ export default function TheaClient() {
   const searchParams = useSearchParams();
   const chatId = searchParams.get("chatId");
 
-  // Get activeUserId for API calls
-  const { accessibleFolders, activeFolderId, activeUserId } = useWorkspace();
+  const { accessibleFolders, activeFolderId } = useWorkspace();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -368,7 +367,6 @@ export default function TheaClient() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": activeUserId,
         },
         body: JSON.stringify({
           messages: messagesToSend,
