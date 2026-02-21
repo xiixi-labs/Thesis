@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
 import { TheaMark } from "@/components/TheaMark";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
-import { getMessages } from "@/app/actions/chat";
+import { getMessages, updateMessageFeedback } from "@/app/actions/chat";
 
 type Citation = {
   id: string;
@@ -20,6 +20,8 @@ type Message = {
   content: string;
   citations?: Citation[];
   scope?: string; // Which notebook was searched
+  isError?: boolean;
+  feedback?: number; // 1 = thumbs up, -1 = thumbs down
 };
 
 type SpeechRecognitionAlternativeLike = { transcript?: string };
@@ -71,7 +73,9 @@ export default function TheaClient() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
@@ -80,17 +84,22 @@ export default function TheaClient() {
     setActiveConversationId(chatId);
     if (chatId) {
       setMessages([]); // Clear before load
+      setIsLoadingHistory(true);
       getMessages(chatId).then(history => {
         const msgs = history.map(h => ({
           id: h.id,
           role: h.role,
           content: h.content,
-          citations: h.citations as Citation[]
+          citations: h.citations as Citation[],
+          feedback: h.feedback,
         }));
         setMessages(msgs);
+      }).finally(() => {
+        setIsLoadingHistory(false);
       });
     } else {
       setMessages([]);
+      setIsLoadingHistory(false);
     }
   }, [chatId]);
 
@@ -332,6 +341,7 @@ export default function TheaClient() {
 
   const query = searchParams.get("q");
   const hasAutoSent = useRef(false);
+  const submitMessageRef = useRef<(textOverride?: string) => Promise<void>>(null!);
 
   const submitMessage = async (textOverride?: string) => {
     const textToSend = textOverride || input;
@@ -361,6 +371,10 @@ export default function TheaClient() {
 
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    // Reset textarea height after clearing
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
     setIsLoading(true);
 
     try {
@@ -423,6 +437,7 @@ export default function TheaClient() {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: errorText,
+        isError: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -430,13 +445,26 @@ export default function TheaClient() {
     }
   };
 
+  const retryLastMessage = useCallback(() => {
+    // Find the last user message before the error
+    const lastUserMsg = [...messages].reverse().find(m => m.role === "user");
+    if (!lastUserMsg) return;
+    // Remove the error message
+    setMessages((prev) => prev.filter(m => !m.isError));
+    // Re-submit
+    submitMessage(lastUserMsg.content);
+  }, [messages, submitMessage]);
+
+  // Keep ref in sync so the auto-send effect always calls the latest version
+  submitMessageRef.current = submitMessage;
+
   // Auto-send query from URL
   useEffect(() => {
     if (query && !hasAutoSent.current && messages.length === 0) {
       hasAutoSent.current = true;
-      // Small delay to ensure state matches
+      // Small delay to ensure component is fully mounted
       setTimeout(() => {
-        submitMessage(query);
+        submitMessageRef.current(query);
       }, 500);
     }
   }, [query, messages.length]);
@@ -445,6 +473,25 @@ export default function TheaClient() {
     e.preventDefault();
     submitMessage();
   };
+
+  const handleFeedback = useCallback(async (messageId: string, feedback: number) => {
+    // Optimistically update local state
+    setMessages((prev) =>
+      prev.map(m => m.id === messageId ? { ...m, feedback: m.feedback === feedback ? 0 : feedback } : m)
+    );
+    try {
+      // Toggle: if same feedback, clear it (send 0); otherwise set it
+      const currentMsg = messages.find(m => m.id === messageId);
+      const newFeedback = currentMsg?.feedback === feedback ? 0 : feedback;
+      await updateMessageFeedback(messageId, newFeedback);
+    } catch (err) {
+      console.error("Failed to update feedback:", err);
+      // Revert on error
+      setMessages((prev) =>
+        prev.map(m => m.id === messageId ? { ...m, feedback: undefined } : m)
+      );
+    }
+  }, [messages]);
 
   const activeSources = useMemo(() => {
     if (!sourcesMessageId) return [] as Citation[];
@@ -620,7 +667,20 @@ export default function TheaClient() {
               </div>
             )}
 
-            {messages.length === 0 ? (
+            {isLoadingHistory ? (
+              <div className="flex flex-col gap-6 pb-4 animate-pulse">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className={`flex items-start gap-4 ${i % 2 === 1 ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className="h-9 w-9 flex-shrink-0 rounded-full bg-zinc-200" />
+                    <div className={`flex max-w-[70%] flex-col gap-2 ${i % 2 === 1 ? "items-end" : "items-start"}`}>
+                      <div className="h-4 w-48 rounded-lg bg-zinc-200" />
+                      {i % 2 === 0 && <div className="h-4 w-64 rounded-lg bg-zinc-200" />}
+                      {i % 2 === 0 && <div className="h-4 w-36 rounded-lg bg-zinc-200" />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : messages.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center pb-20 text-center">
                 <div className="mb-4 flex justify-center">
                   <TheaMark className="h-14 w-14" />
@@ -640,7 +700,7 @@ export default function TheaClient() {
                   ].map((q) => (
                     <button
                       key={q.label}
-                      onClick={() => setInput(q.label)}
+                      onClick={() => submitMessage(q.label)}
                       className="group relative flex items-center justify-between gap-3 rounded-2xl bg-white/40 px-5 py-4 text-left shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 hover:shadow-md"
                     >
                       <span className="text-sm font-medium text-zinc-700">{q.label}</span>
@@ -683,7 +743,9 @@ export default function TheaClient() {
                       <div
                         className={`rounded-2xl px-5 py-3.5 shadow-sm ${m.role === "user"
                           ? "bg-zinc-900 text-white"
-                          : "border border-black/10 bg-white/70 text-zinc-800"
+                          : m.isError
+                            ? "border border-red-200 bg-red-50/80 text-red-800"
+                            : "border border-black/10 bg-white/70 text-zinc-800"
                           }`}
                       >
                         <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
@@ -708,6 +770,38 @@ export default function TheaClient() {
                             Copy
                           </button>
 
+                          {/* Thumbs up/down feedback */}
+                          {!m.isError && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleFeedback(m.id, 1)}
+                                className={`inline-flex items-center justify-center rounded-full border p-1.5 shadow-sm transition ${m.feedback === 1
+                                  ? "border-green-300 bg-green-50 text-green-700"
+                                  : "border-black/10 bg-white/70 text-zinc-400 hover:bg-white hover:text-zinc-600"
+                                  }`}
+                                title="Helpful"
+                              >
+                                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904m7.723-9.022a2.606 2.606 0 00-.623-.23M5.904 18.75c.083.228.19.448.318.657a4.28 4.28 0 003.549 1.843h1.979M5.904 18.75H4.09" />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleFeedback(m.id, -1)}
+                                className={`inline-flex items-center justify-center rounded-full border p-1.5 shadow-sm transition ${m.feedback === -1
+                                  ? "border-red-300 bg-red-50 text-red-700"
+                                  : "border-black/10 bg-white/70 text-zinc-400 hover:bg-white hover:text-zinc-600"
+                                  }`}
+                                title="Not helpful"
+                              >
+                                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 01-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23h1.294M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 007.5 19.75 2.25 2.25 0 009.75 22a.75.75 0 00.75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 002.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384" />
+                                </svg>
+                              </button>
+                            </>
+                          )}
+
                           {/* Sources button */}
                           {!!m.citations?.length && (
                             <button
@@ -718,6 +812,20 @@ export default function TheaClient() {
                               <DocumentIcon className="h-3 w-3 opacity-60" />
                               <span>Sources</span>
                               <span className="rounded-full bg-black/5 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-700">{m.citations.length}</span>
+                            </button>
+                          )}
+
+                          {/* Retry button for error messages */}
+                          {m.isError && (
+                            <button
+                              type="button"
+                              onClick={retryLastMessage}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700 shadow-sm transition hover:bg-red-100 hover:text-red-900"
+                            >
+                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                              </svg>
+                              Retry
                             </button>
                           )}
                         </div>
@@ -769,14 +877,20 @@ export default function TheaClient() {
                   </div>
                 )}
                 <textarea
+                  ref={textareaRef}
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    // Auto-resize
+                    const el = e.target;
+                    el.style.height = "auto";
+                    el.style.height = Math.min(el.scrollHeight, 128) + "px"; // 128px = max-h-32
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitMessage(); }
                   }}
                   placeholder="Ask Thea anything..."
                   rows={1}
-                  // 'items-center' on parent + 'h-6' on textarea ensures vertical centering visually
                   className="max-h-32 w-full resize-none bg-transparent px-1 text-lg text-zinc-900 placeholder:text-zinc-500 focus:outline-none scrollbar-hide py-3 leading-6"
                   style={{ minHeight: '3rem' }}
                 />
