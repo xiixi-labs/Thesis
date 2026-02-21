@@ -4,24 +4,14 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 import { useUser } from "@clerk/nextjs";
 import {
   canUserAccessFolder,
-  getOrg,
-  getTeamsForOrg,
-  getTeamsForUser,
   mockWorkspace,
   type Folder,
-  type Org,
-  type Team,
   type User,
 } from "@/lib/workspace";
 
 type WorkspaceState = {
-  org: Org;
   user: User;
-  teamsInOrg: Team[];
-  userTeams: Team[];
   accessibleFolders: Folder[];
-  activeTeamId: string | null;
-  setActiveTeamId: (id: string | null) => void;
   activeFolderId: string | null;
   setActiveFolderId: (id: string | null) => void;
 
@@ -58,8 +48,6 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   // Get Clerk user data
   const { user: clerkUser, isLoaded } = useUser();
 
-  const [activeOrgId] = useState(mockWorkspace.orgs[0].id);
-  const [activeTeamId, setActiveTeamId] = useState<string | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
   const [customFolders, setCustomFolders] = useState<Folder[]>(() => {
@@ -74,13 +62,10 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 
       const folder: Folder = {
         id: makeFolderId(),
-        orgId: activeOrgId,
+        userId: clerkUser.id,
         name: params.name,
         description: params.description,
         parentId: params.parentId,
-        // Make it visible to the current user under the existing access model.
-        teamIds: ["team_sales"], // Default team
-        allowedUserIds: [clerkUser.id],
       };
 
       setCustomFolders((prev) => {
@@ -93,65 +78,44 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 
       return folder;
     },
-    [clerkUser, activeOrgId]
+    [clerkUser]
   );
 
   const value = useMemo<WorkspaceState>(() => {
     // Create workspace user from Clerk data
     if (!isLoaded || !clerkUser) {
-      // Return placeholder while loading
+      // Return placeholder or completely empty structure while loading/unauthenticated
       return {
-        org: mockWorkspace.orgs[0],
-        user: mockWorkspace.users[0],
-        teamsInOrg: [],
-        userTeams: [],
+        user: { id: "loading_user", name: "Loading..." },
         accessibleFolders: [],
-        activeTeamId: null,
-        setActiveTeamId,
         activeFolderId: null,
         setActiveFolderId,
         createNotebook,
-        activeUserId: mockWorkspace.users[0].id, // Fallback during loading
+        activeUserId: "loading_user", // Fallback during loading
       };
     }
 
     const user: User = {
       id: clerkUser.id,
-      orgId: activeOrgId,
       name: clerkUser.fullName || clerkUser.firstName || clerkUser.primaryEmailAddress?.emailAddress || "User",
-      role: "member", // Default role for now
-      teamIds: ["team_sales"], // Default team
     };
 
-    const org = getOrg(activeOrgId)!;
-
-    const teamsInOrg = getTeamsForOrg(activeOrgId);
-    const userTeams = getTeamsForUser(user);
-
     const allFolders = [...mockWorkspace.folders, ...customFolders];
-    const visibleFolders = allFolders.filter((f) => canUserAccessFolder(user, f));
-    const accessibleFolders = activeTeamId
-      ? visibleFolders.filter((f) => f.teamIds.includes(activeTeamId))
-      : visibleFolders;
+    const accessibleFolders = allFolders.filter((f) => canUserAccessFolder(user, f));
 
-    // Keep active folder valid when switching team/persona.
+    // Keep active folder valid
     const activeFolderStillVisible =
       !activeFolderId || accessibleFolders.some((f) => f.id === activeFolderId);
 
     return {
-      org,
       user,
-      teamsInOrg,
-      userTeams,
       accessibleFolders,
-      activeTeamId,
-      setActiveTeamId,
       activeFolderId: activeFolderStillVisible ? activeFolderId : null,
       setActiveFolderId,
       createNotebook,
       activeUserId: user.id, // Expose Clerk user ID for API calls
     };
-  }, [activeFolderId, activeOrgId, activeTeamId, clerkUser, isLoaded, customFolders, createNotebook, setActiveTeamId, setActiveFolderId]);
+  }, [activeFolderId, clerkUser, isLoaded, customFolders, createNotebook, setActiveFolderId]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

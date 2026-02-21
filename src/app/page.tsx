@@ -233,7 +233,6 @@ export default function Home() {
           <section id="hero-preview" className="scroll-mt-24 pt-4 pb-20">
             {/* Section label */}
             <div className="text-center mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-              <p className="text-sm font-semibold text-zinc-500 uppercase tracking-[0.14em]">What it looks like</p>
             </div>
 
             <div
@@ -323,7 +322,6 @@ export default function Home() {
           <section id="who-its-for" className="py-24 md:py-32">
             <RevealOnScroll>
               <div className="text-center mb-20">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-zinc-500 mb-5">Who it&apos;s for</p>
                 <h2 className="text-4xl md:text-6xl font-bold tracking-[-0.02em] text-zinc-950">
                   For independent learners
                   <br className="hidden sm:block" />
@@ -340,26 +338,34 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                 {/* Card 1: Students (Top Left) */}
                 <div className="md:col-span-3 h-full">
-                  <SpotlightCard className="h-full rounded-[2rem] border-zinc-200 bg-white/50 p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm" spotlightColor="rgba(0,0,0,0.05)">
+                  <SpotlightCard className="group h-full rounded-[2rem] border-zinc-200 bg-white/50 p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm overflow-hidden" spotlightColor="rgba(251,146,60,0.07)">
                     <div className="absolute top-0 right-0 p-8 h-full w-full flex items-center justify-end pointer-events-none overflow-hidden">
-                      <div className="relative w-64 h-full -mr-12 -mt-12 opacity-90">
-                        {/* Stacked Flashcards Visual */}
-                        <div className="absolute top-8 right-8 w-40 h-28 bg-white rounded-xl shadow-sm border border-zinc-200 rotate-6 transform translate-x-2 translate-y-2" />
+                      <div className="relative w-64 h-full -mr-12 -mt-12 opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
+                        {/* Back cards with warm tint */}
+                        <div className="absolute top-8 right-8 w-40 h-28 bg-orange-50 rounded-xl shadow-sm border border-orange-100/80 rotate-6 transform translate-x-2 translate-y-2" />
                         <div className="absolute top-8 right-8 w-40 h-28 bg-white rounded-xl shadow-md border border-zinc-200 rotate-3 transform translate-x-1 translate-y-1" />
-                        <div className="absolute top-8 right-8 w-40 h-28 bg-white rounded-xl shadow-lg border border-zinc-200 flex flex-col p-4">
-                          <div className="h-1.5 w-12 bg-orange-100 rounded-full mb-3" />
-                          <div className="space-y-1.5">
-                            <div className="h-1.5 w-full bg-zinc-100 rounded-full" />
-                            <div className="h-1.5 w-2/3 bg-zinc-100 rounded-full" />
-                          </div>
-                          <div className="mt-auto flex gap-2">
-                            <div className="h-6 w-full bg-orange-50 rounded-md border border-orange-100" />
-                            <div className="h-6 w-full bg-zinc-50 rounded-md border border-zinc-100" />
+                        {/* Front card with colored header stripe */}
+                        <div className="absolute top-8 right-8 w-40 h-28 bg-white rounded-xl shadow-lg border border-zinc-200 flex flex-col overflow-hidden">
+                          <div className="h-2 w-full bg-gradient-to-r from-orange-300 to-amber-300 shrink-0" />
+                          <div className="p-3 flex flex-col flex-1">
+                            <div className="space-y-1.5 mb-2">
+                              <div className="h-1.5 w-full bg-zinc-100 rounded-full" />
+                              <div className="h-1.5 w-2/3 bg-zinc-100 rounded-full" />
+                              <div className="h-1.5 w-4/5 bg-zinc-100 rounded-full" />
+                            </div>
+                            <div className="mt-auto flex gap-2">
+                              <div className="h-6 w-full bg-orange-50 rounded-md border border-orange-100 flex items-center justify-center">
+                                <div className="h-1 w-8 bg-orange-200/80 rounded-full" />
+                              </div>
+                              <div className="h-6 w-full bg-zinc-50 rounded-md border border-zinc-100 flex items-center justify-center">
+                                <div className="h-1 w-8 bg-zinc-200/80 rounded-full" />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="relative z-10 w-12 h-12 rounded-2xl bg-zinc-100/80 border border-zinc-200 flex items-center justify-center text-zinc-900 mb-20 shadow-sm">
+                    <div className="relative z-10 w-14 h-14 rounded-2xl bg-black/5 border border-zinc-200 flex items-center justify-center text-zinc-500 mb-20 shadow-sm transition-all duration-300 group-hover:bg-orange-50 group-hover:border-orange-100 group-hover:text-orange-600 group-hover:scale-110">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                       </svg>
@@ -373,30 +379,32 @@ export default function Home() {
 
                 {/* Card 2: Independent Learners (Top Right) */}
                 <div className="md:col-span-3 h-full">
-                  <SpotlightCard className="h-full rounded-[2rem] border-zinc-200 bg-white/50 p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm" spotlightColor="rgba(0,0,0,0.05)">
+                  <SpotlightCard className="group h-full rounded-[2rem] border-zinc-200 bg-white/50 p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm overflow-hidden" spotlightColor="rgba(99,102,241,0.07)">
                     <div className="absolute top-0 right-0 p-8 h-full w-full flex items-center justify-end pointer-events-none">
-                      <div className="relative w-64 h-48 -mr-12 -mt-8 opacity-90">
-                        {/* Knowledge Graph Visual */}
-                        <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm z-20 transform -translate-x-1/2 -translate-y-1/2" />
-
-                        {/* Nodes */}
-                        <div className="absolute top-1/3 left-1/3 w-2 h-2 bg-blue-300 rounded-full" />
-                        <div className="absolute bottom-1/3 right-1/4 w-2 h-2 bg-blue-300 rounded-full" />
-                        <div className="absolute top-1/4 right-1/3 w-2 h-2 bg-blue-300 rounded-full" />
-
-                        {/* Edges (using SVG for lines) */}
+                      <div className="relative w-64 h-48 -mr-12 -mt-8 opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
+                        {/* Central node — bigger, indigo */}
+                        <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-indigo-500 rounded-full border-2 border-white shadow-md z-20 transform -translate-x-1/2 -translate-y-1/2" />
+                        {/* Satellite nodes */}
+                        <div className="absolute top-[25%] left-[25%] w-2.5 h-2.5 bg-indigo-300 rounded-full shadow-sm" />
+                        <div className="absolute bottom-[25%] right-[22%] w-2.5 h-2.5 bg-indigo-300 rounded-full shadow-sm" />
+                        <div className="absolute top-[20%] right-[28%] w-2.5 h-2.5 bg-indigo-300 rounded-full shadow-sm" />
+                        <div className="absolute bottom-[30%] left-[20%] w-2 h-2 bg-indigo-200 rounded-full shadow-sm" />
+                        <div className="absolute top-[55%] right-[15%] w-2 h-2 bg-indigo-200 rounded-full shadow-sm" />
+                        {/* Edges */}
                         <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'visible' }}>
-                          <path d="M128 96 L85 64" stroke="rgb(147 197 253)" strokeWidth="1.5" strokeOpacity="0.6" />
-                          <path d="M128 96 L192 128" stroke="rgb(147 197 253)" strokeWidth="1.5" strokeOpacity="0.6" />
-                          <path d="M128 96 L170 48" stroke="rgb(147 197 253)" strokeWidth="1.5" strokeOpacity="0.6" />
+                          <path d="M128 96 L64 60" stroke="rgb(129 140 248)" strokeWidth="1.5" strokeOpacity="0.5" />
+                          <path d="M128 96 L192 132" stroke="rgb(129 140 248)" strokeWidth="1.5" strokeOpacity="0.5" />
+                          <path d="M128 96 L172 48" stroke="rgb(129 140 248)" strokeWidth="1.5" strokeOpacity="0.5" />
+                          <path d="M128 96 L51 120" stroke="rgb(165 180 252)" strokeWidth="1" strokeOpacity="0.4" />
+                          <path d="M128 96 L202 136" stroke="rgb(165 180 252)" strokeWidth="1" strokeOpacity="0.4" />
                         </svg>
-
-                        {/* Floating Labels */}
-                        <div className="absolute top-[28%] left-[28%] bg-white/90 border border-blue-100 rounded px-1.5 py-0.5 text-[8px] font-medium text-blue-600 shadow-sm backdrop-blur-sm">History</div>
-                        <div className="absolute bottom-[28%] right-[20%] bg-white/90 border border-blue-100 rounded px-1.5 py-0.5 text-[8px] font-medium text-blue-600 shadow-sm backdrop-blur-sm">Econ</div>
+                        {/* Labels — three topics now */}
+                        <div className="absolute top-[18%] left-[18%] bg-white/90 border border-indigo-100 rounded px-1.5 py-0.5 text-[8px] font-semibold text-indigo-600 shadow-sm">History</div>
+                        <div className="absolute bottom-[18%] right-[16%] bg-white/90 border border-indigo-100 rounded px-1.5 py-0.5 text-[8px] font-semibold text-indigo-600 shadow-sm">Econ</div>
+                        <div className="absolute top-[10%] right-[22%] bg-white/90 border border-indigo-100 rounded px-1.5 py-0.5 text-[8px] font-semibold text-indigo-600 shadow-sm">Notes</div>
                       </div>
                     </div>
-                    <div className="relative z-10 w-12 h-12 rounded-2xl bg-zinc-100/80 border border-zinc-200 flex items-center justify-center text-zinc-900 mb-20 shadow-sm">
+                    <div className="relative z-10 w-14 h-14 rounded-2xl bg-black/5 border border-zinc-200 flex items-center justify-center text-zinc-500 mb-20 shadow-sm transition-all duration-300 group-hover:bg-indigo-50 group-hover:border-indigo-100 group-hover:text-indigo-600 group-hover:scale-110">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                       </svg>
@@ -410,50 +418,57 @@ export default function Home() {
 
                 {/* Card 3: Researchers (Bottom Full Width) */}
                 <div className="md:col-span-6 h-full">
-                  <SpotlightCard className="h-full rounded-[2rem] border-zinc-200 bg-white/50 p-10 flex flex-col md:flex-row md:items-center justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm relative overflow-hidden" spotlightColor="rgba(0,0,0,0.05)">
+                  <SpotlightCard className="group min-h-[200px] h-full rounded-[2rem] border-zinc-200 bg-white/50 p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm relative overflow-hidden" spotlightColor="rgba(168,85,247,0.07)">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-50/30 to-transparent opacity-50" />
-                    <div className="relative z-10 flex-1 pr-6">
-                      <div className="w-12 h-12 rounded-2xl bg-zinc-100/80 border border-zinc-200 flex items-center justify-center text-zinc-900 mb-6 shadow-sm">
+
+                    {/* Absolute positioned Visual on the right side */}
+                    <div className="absolute top-0 right-0 p-10 h-full w-full flex items-center justify-end pointer-events-none">
+                      {/* Citation Pipeline with labels */}
+                      <div className="relative w-full max-w-md flex items-center justify-end gap-2 opacity-90 md:mr-0 transition-transform duration-500 group-hover:scale-105">
+                        {/* Source */}
+                        <div className="flex flex-col items-center gap-1.5 shrink-0">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Source</span>
+                          <div className="w-12 h-14 bg-white border border-zinc-200 rounded-lg shadow-sm flex items-center justify-center">
+                            <span className="text-[10px] font-bold text-zinc-400">PDF</span>
+                          </div>
+                        </div>
+                        {/* Line 1 */}
+                        <div className="flex-1 min-w-[30px] h-px bg-zinc-200 relative overflow-hidden mx-2">
+                          <div className="absolute inset-0 w-full bg-purple-500/50 blur-[2px] animate-[slide-right_2s_linear_infinite]" />
+                        </div>
+                        {/* Thea */}
+                        <div className="flex flex-col items-center gap-1.5 shrink-0">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-purple-500">Thea</span>
+                          <div className="w-10 h-10 rounded-full bg-purple-50 border border-purple-200 flex items-center justify-center shadow-sm z-10">
+                            <div className="w-2.5 h-2.5 bg-purple-500 rounded-full animate-pulse" />
+                          </div>
+                        </div>
+                        {/* Line 2 */}
+                        <div className="flex-1 min-w-[30px] h-px bg-zinc-200 relative overflow-hidden mx-2">
+                          <div className="absolute inset-0 w-full bg-purple-500/50 blur-[2px] animate-[slide-right_2s_linear_infinite_0.5s]" />
+                        </div>
+                        {/* Answer */}
+                        <div className="flex flex-col items-center gap-1.5 shrink-0">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Answer</span>
+                          <div className="w-24 h-14 bg-white border border-purple-100 rounded-xl shadow-sm p-2 flex flex-col gap-1.5 justify-center">
+                            <div className="h-1.5 w-3/4 bg-zinc-100 rounded-full" />
+                            <div className="h-1.5 w-full bg-zinc-100 rounded-full" />
+                            <div className="h-1.5 w-1/2 bg-purple-100 rounded-full" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="relative z-10 flex flex-col justify-start max-w-xl pointer-events-none">
+                      <div className="w-14 h-14 rounded-2xl bg-black/5 border border-zinc-200 flex items-center justify-center text-zinc-500 mb-6 shadow-sm transition-all duration-300 group-hover:bg-purple-50 group-hover:border-purple-100 group-hover:text-purple-600 group-hover:scale-110">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>
                       </div>
-                      <h3 className="text-2xl font-bold text-zinc-900 mb-3">Solo Researchers</h3>
-                      <p className="text-zinc-600 leading-relaxed font-medium text-lg max-w-xl">
+                      <h3 className="text-2xl font-bold text-zinc-900 mb-3 pointer-events-auto">Solo Researchers</h3>
+                      <p className="text-zinc-600 leading-relaxed font-medium text-lg pointer-events-auto">
                         Trace claims back to original passages so your work stays verifiable, organized, and citation-ready.
                       </p>
-                    </div>
-
-                    {/* Citation Pipeline Visual */}
-                    <div className="relative h-full w-full md:w-1/2 flex items-center justify-center gap-2 opacity-90 mt-8 md:mt-0">
-                      {/* Document Node */}
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-12 h-14 bg-white border border-zinc-200 rounded-lg shadow-sm flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-zinc-300">PDF</span>
-                        </div>
-                      </div>
-
-                      {/* Connector Line with Beam */}
-                      <div className="flex-1 h-px bg-zinc-200 relative overflow-hidden mx-2">
-                        <div className="absolute inset-0 w-1/3 bg-purple-500/50 blur-[2px] animate-[slide-right_2s_linear_infinite]" />
-                      </div>
-
-                      {/* Thea Node */}
-                      <div className="w-8 h-8 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center shadow-sm z-10">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-                      </div>
-
-                      {/* Connector Line 2 */}
-                      <div className="flex-1 h-px bg-zinc-200 relative overflow-hidden mx-2">
-                        <div className="absolute inset-0 w-1/3 bg-purple-500/50 blur-[2px] animate-[slide-right_2s_linear_infinite_0.5s]" />
-                      </div>
-
-                      {/* Answer Node */}
-                      <div className="w-24 h-14 bg-white border border-purple-100 rounded-xl shadow-sm p-2 flex flex-col gap-1.5 justify-center">
-                        <div className="h-1.5 w-3/4 bg-zinc-100 rounded-full" />
-                        <div className="h-1.5 w-full bg-zinc-100 rounded-full" />
-                        <div className="h-1.5 w-1/2 bg-purple-100 rounded-full" />
-                      </div>
                     </div>
                   </SpotlightCard>
                 </div>
@@ -467,8 +482,7 @@ export default function Home() {
           <section id="how-it-works" className="py-24 md:py-32">
             <RevealOnScroll>
               <div className="text-center mb-20">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-zinc-500 mb-5">How it works</p>
-                <h2 className="text-4xl md:text-6xl font-bold tracking-[-0.02em] text-zinc-950">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
                   Three steps. That&apos;s it.
                 </h2>
                 <p className="mt-6 max-w-2xl mx-auto text-lg leading-relaxed text-zinc-500">
@@ -479,7 +493,7 @@ export default function Home() {
 
             <RevealOnScroll delay={100}>
               <div className="mx-auto max-w-6xl">
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid gap-6 md:grid-cols-3 md:gap-8">
                   {[
                     {
                       title: "Create a notebook",
@@ -496,9 +510,9 @@ export default function Home() {
                   ].map((step, i) => (
                     <div
                       key={step.title}
-                      className="group relative rounded-2xl border border-zinc-200 bg-white/50 p-8 shadow-sm transition hover:shadow-md hover:bg-white"
+                      className="group relative rounded-[2rem] border border-zinc-200 bg-white/50 p-8 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white"
                     >
-                      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-sm font-bold text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                      <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-black/5 text-lg font-bold text-zinc-500 transition-all duration-300 group-hover:bg-zinc-900 group-hover:text-white group-hover:scale-110 shadow-sm border border-zinc-200 group-hover:border-zinc-800">
                         {i + 1}
                       </div>
 
@@ -508,21 +522,7 @@ export default function Home() {
                   ))}
                 </div>
 
-                <div className="mt-16 text-center">
-                  <div className="flex items-center gap-4 justify-center">
-                    <a href="/sign-in" className="text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors">
-                      Sign in
-                    </a>
-                    <MagneticWrapper strength={0.2} className="inline-block">
-                      <a
-                        href={PRIMARY_CTA_HREF}
-                        className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-zinc-900/20 ring-1 ring-inset ring-zinc-900/10 transition-all hover:bg-zinc-800 hover:scale-105"
-                      >
-                        {PRIMARY_CTA_LABEL}
-                      </a>
-                    </MagneticWrapper>
-                  </div>
-                </div>
+
               </div>
             </RevealOnScroll>
           </section>
@@ -542,8 +542,7 @@ export default function Home() {
           <div className="relative mx-auto w-full max-w-6xl px-6">
             <RevealOnScroll>
               <div className="text-center mb-20">
-                <p className="text-sm font-medium uppercase tracking-[0.16em] text-zinc-500 mb-5">Security</p>
-                <h2 className="text-4xl md:text-6xl font-bold tracking-[-0.02em] text-white">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-[-0.02em] text-white">
                   Your data stays yours.
                 </h2>
                 <p className="mt-6 max-w-2xl mx-auto text-lg leading-relaxed text-zinc-400">
@@ -552,7 +551,7 @@ export default function Home() {
               </div>
             </RevealOnScroll>
 
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3 md:gap-8">
               {[
                 {
                   title: "Security-first infrastructure",
@@ -584,10 +583,10 @@ export default function Home() {
               ].map((card, i) => (
                 <RevealOnScroll key={card.title} delay={i * 100}>
                   <SpotlightCard
-                    className="h-full rounded-2xl border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl transition-all duration-300 hover:bg-white/[0.08] hover:-translate-y-1"
+                    className="h-full rounded-[2rem] border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl transition-all duration-300 hover:bg-white/[0.08] hover:-translate-y-1 group"
                     spotlightColor="rgba(255, 255, 255, 0.15)"
                   >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.06] text-zinc-300 group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-500 border border-white/5 shadow-sm group-hover:bg-white/[0.08] group-hover:border-white/10 group-hover:text-white group-hover:scale-110 transition-all duration-300">
                       {card.icon}
                     </div>
                     <div className="mt-5 text-base font-semibold text-white">{card.title}</div>
@@ -619,8 +618,7 @@ export default function Home() {
           <section id="pricing" className="py-24 md:py-32">
             <RevealOnScroll>
               <div className="text-center max-w-2xl mx-auto mb-20">
-                <p className="text-sm font-medium uppercase tracking-[0.16em] text-zinc-400 mb-5">Pricing</p>
-                <h2 className="text-4xl md:text-6xl font-bold tracking-[-0.02em] text-zinc-950">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
                   Simple, honest pricing.
                 </h2>
                 <p className="mt-6 text-lg leading-relaxed text-zinc-500">
@@ -638,7 +636,7 @@ export default function Home() {
               </div>
             </RevealOnScroll>
 
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3 md:gap-8">
               {/* Personal */}
               <RevealOnScroll delay={0}>
                 <SpotlightCard className="h-full bg-white/60 border-black/5 rounded-[2.5rem] p-10 flex flex-col shadow-sm backdrop-blur-3xl transition-all duration-500 hover:shadow-lg hover:-translate-y-1">
@@ -775,8 +773,7 @@ export default function Home() {
           <section id="faq" className="py-24 md:py-32">
             <RevealOnScroll>
               <div className="text-center mb-14">
-                <p className="text-sm font-medium uppercase tracking-[0.16em] text-zinc-400 mb-5">FAQ</p>
-                <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
                   Frequently asked questions
                 </h2>
               </div>
@@ -814,8 +811,7 @@ export default function Home() {
           <section className="py-24 md:py-32">
             <RevealOnScroll>
               <div className="text-center mb-20">
-                <p className="text-sm font-medium uppercase tracking-[0.16em] text-zinc-400 mb-5">Roadmap</p>
-                <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-[-0.02em] text-zinc-950">
                   What&apos;s coming next
                 </h2>
                 <p className="mt-6 max-w-2xl mx-auto text-lg leading-relaxed text-zinc-500">
@@ -837,8 +833,9 @@ export default function Home() {
                     </svg>
                   ),
                   styles: {
-                    iconBg: "bg-zinc-100/80",
-                    iconColor: "text-zinc-900",
+                    iconBg: "group-hover:bg-emerald-50 bg-black/5",
+                    iconColor: "group-hover:text-emerald-600 text-zinc-500",
+                    iconBorder: "group-hover:border-emerald-100 border-zinc-200",
                     pillBg: "bg-emerald-100/50",
                     pillText: "text-emerald-700",
                     spotlight: "rgba(16, 185, 129, 0.1)"
@@ -854,8 +851,9 @@ export default function Home() {
                     </svg>
                   ),
                   styles: {
-                    iconBg: "bg-zinc-100/80",
-                    iconColor: "text-zinc-900",
+                    iconBg: "group-hover:bg-indigo-50 bg-black/5",
+                    iconColor: "group-hover:text-indigo-600 text-zinc-500",
+                    iconBorder: "group-hover:border-indigo-100 border-zinc-200",
                     pillBg: "bg-indigo-100/50",
                     pillText: "text-indigo-700",
                     spotlight: "rgba(99, 102, 241, 0.1)"
@@ -871,8 +869,9 @@ export default function Home() {
                     </svg>
                   ),
                   styles: {
-                    iconBg: "bg-zinc-100/80",
-                    iconColor: "text-zinc-900",
+                    iconBg: "group-hover:bg-amber-50 bg-black/5",
+                    iconColor: "group-hover:text-amber-600 text-zinc-500",
+                    iconBorder: "group-hover:border-amber-100 border-zinc-200",
                     pillBg: "bg-amber-100/50",
                     pillText: "text-amber-700",
                     spotlight: "rgba(245, 158, 11, 0.1)"
@@ -881,10 +880,10 @@ export default function Home() {
               ].map((item, i) => (
                 <RevealOnScroll key={item.title} delay={i * 100}>
                   <SpotlightCard
-                    className="h-full p-8 rounded-[2rem] border border-zinc-200 bg-white/50 backdrop-blur-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group flex flex-col"
+                    className="h-full p-8 rounded-[2rem] border border-zinc-200 bg-white/50 backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:-translate-y-1 group flex flex-col"
                     spotlightColor={item.styles.spotlight}
                   >
-                    <div className={`w-12 h-12 rounded-2xl ${item.styles.iconBg} border border-white/50 flex items-center justify-center ${item.styles.iconColor} mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                    <div className={`w-14 h-14 rounded-2xl ${item.styles.iconBg} border flex items-center justify-center ${item.styles.iconColor} ${item.styles.iconBorder} mb-6 group-hover:scale-110 transition-all duration-300 shadow-sm`}>
                       {item.icon}
                     </div>
 
@@ -903,18 +902,7 @@ export default function Home() {
               ))}
             </div>
 
-            <RevealOnScroll delay={200}>
-              <div className="mt-14 text-center">
-                <div className="inline-block rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#ff0080,#ff8c00,#40e0d0,#8a2be2,#ff0080)] p-[1px] shadow-lg shadow-zinc-900/10">
-                  <a
-                    href={PRIMARY_CTA_HREF}
-                    className="inline-flex h-12 items-center justify-center rounded-full bg-white/95 px-8 text-sm font-semibold text-zinc-950 backdrop-blur-sm transition hover:bg-white"
-                  >
-                    {PRIMARY_CTA_LABEL}
-                  </a>
-                </div>
-              </div>
-            </RevealOnScroll>
+
           </section>
         </main>
 

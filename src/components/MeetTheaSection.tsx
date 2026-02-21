@@ -16,10 +16,9 @@ const FEATURES = [
         id: 0,
         color: "emerald",
         icon: (active: boolean) => (
-            <span className="flex h-6 w-6 relative items-center justify-center rounded-full bg-emerald-100/50 text-emerald-600">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                    <path fillRule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z" clipRule="evenodd" />
-                    <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" />
+            <span className={`flex h-6 w-6 relative items-center justify-center rounded-full transition-colors duration-300 ${active ? 'bg-emerald-100/50 text-emerald-600' : 'bg-black/5 text-zinc-400'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
             </span>
         ),
@@ -32,9 +31,9 @@ const FEATURES = [
         id: 1,
         color: "indigo",
         icon: (active: boolean) => (
-            <span className="flex h-6 w-6 relative items-center justify-center rounded-full bg-indigo-100/50 text-indigo-600">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm0 8.625a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25zM15.375 12a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zM7.5 10.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z" clipRule="evenodd" />
+            <span className={`flex h-6 w-6 relative items-center justify-center rounded-full transition-colors duration-300 ${active ? 'bg-indigo-100/50 text-indigo-600' : 'bg-black/5 text-zinc-400'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
                 </svg>
             </span>
         ),
@@ -47,9 +46,9 @@ const FEATURES = [
         id: 2,
         color: "amber",
         icon: (active: boolean) => (
-            <span className="flex h-6 w-6 relative items-center justify-center rounded-full bg-amber-100/50 text-amber-600">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                    <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
+            <span className={`flex h-6 w-6 relative items-center justify-center rounded-full transition-colors duration-300 ${active ? 'bg-amber-100/50 text-amber-600' : 'bg-black/5 text-zinc-400'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
             </span>
         ),
@@ -193,57 +192,45 @@ const CARD_GRADIENTS = [
     "bg-[radial-gradient(circle_at_top,#f59e0b15,transparent_70%)]",   // amber (deep work)
 ];
 
-// ─── Helper Component for Scroll Trigger ─────────────────────────────────────
-
-function ScrollFeature({
-    index,
-    feature,
-    setActiveTab
-}: {
-    index: number,
-    feature: typeof FEATURES[number],
-    setActiveTab: (i: number) => void
-}) {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { margin: "-50% 0px -50% 0px" });
-
-    useEffect(() => {
-        if (isInView) {
-            setActiveTab(index);
-        }
-    }, [isInView, index, setActiveTab]);
-
-    return (
-        <div ref={ref} className="min-h-[40vh] flex flex-col justify-center py-10 opacity-90 transition-opacity duration-500 data-[active=true]:opacity-100" data-active={isInView}>
-            <div className={`p-1 mb-4 w-fit rounded-xl bg-zinc-100/50`}>
-                {feature.icon(isInView)}
-            </div>
-            <h3 className="text-2xl font-bold text-zinc-900 mb-3">{feature.title}</h3>
-            <p className="text-lg text-zinc-600 leading-relaxed max-w-md">
-                {feature.description}
-            </p>
-        </div>
-    );
-}
-
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export function MeetTheaSection() {
     const [activeTab, setActiveTab] = useState(0);
+    const [progress, setProgress] = useState(0);
+    const [isHovering, setIsHovering] = useState(false);
 
     const ActiveCard = CARD_COMPONENTS[activeTab];
 
+    // Auto-advance tabs
+    useEffect(() => {
+        if (isHovering) return;
+
+        const interval = setInterval(() => {
+            setProgress((prev) => {
+                if (prev >= 100) {
+                    setActiveTab((current) => (current + 1) % FEATURES.length);
+                    return 0;
+                }
+                return prev + 1; // Roughly 5-8 seconds per tab (100 steps * 50ms)
+            });
+        }, 60);
+
+        return () => clearInterval(interval);
+    }, [isHovering, activeTab]);
+
+    const handleTabClick = (index: number) => {
+        setActiveTab(index);
+        setProgress(0);
+    };
+
     return (
-        <section id="meet-thea" className="py-24 md:py-32 relative">
+        <section id="meet-thea" className="py-24 md:py-32 relative overflow-hidden">
             <div className="mx-auto max-w-6xl px-6">
 
                 {/* Header */}
-                <div className="mb-20 max-w-2xl">
+                <div className="mb-16 max-w-2xl text-center mx-auto md:text-left md:mx-0">
                     <RevealOnScroll>
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-zinc-500 mb-5">
-                            AI study partner
-                        </p>
-                        <h2 className="text-4xl md:text-6xl font-bold tracking-[-0.02em] text-zinc-950">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.02em] text-zinc-950">
                             Meet Thea.
                         </h2>
                         <p className="mt-6 text-lg leading-relaxed text-zinc-600">
@@ -253,34 +240,54 @@ export function MeetTheaSection() {
                     </RevealOnScroll>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-20 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center"
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}>
 
-                    {/* ── Left: Scrollable Text Blocks ── */}
-                    <div className="flex-1 pb-32">
-                        {FEATURES.map((feature, i) => (
-                            <ScrollFeature
-                                key={feature.id}
-                                index={i}
-                                feature={feature}
-                                setActiveTab={setActiveTab}
-                            />
-                        ))}
-                        {/* CTA */}
-                        <div className="mt-10 pl-1">
-                            <a
-                                href={CTA_HREF}
-                                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-7 py-3 text-sm font-semibold text-zinc-900 shadow-sm backdrop-blur-2xl hover:bg-white hover:border-black/20 transition"
-                            >
-                                {CTA_LABEL}
-                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
-                            </a>
-                        </div>
+                    {/* ── Left: Interactive Feature Tabs ── */}
+                    <div className="lg:col-span-5 flex flex-col gap-4">
+                        {FEATURES.map((feature, i) => {
+                            const isActive = activeTab === i;
+                            return (
+                                <button
+                                    key={feature.id}
+                                    onClick={() => handleTabClick(i)}
+                                    className={`relative text-left flex flex-col gap-3 p-6 rounded-3xl transition-all duration-300 border ${isActive
+                                        ? "bg-white/80 border-black/10 shadow-sm shadow-black/5"
+                                        : "bg-white/30 border-transparent hover:bg-white/50"
+                                        }`}
+                                >
+                                    {/* Progress Bar Background (Active Only) */}
+                                    {isActive && (
+                                        <div className="absolute bottom-0 left-0 h-1 bg-zinc-100 w-full overflow-hidden rounded-b-3xl">
+                                            <motion.div
+                                                className={`h-full bg-${feature.color}-500/50`}
+                                                initial={{ width: "0%" }}
+                                                animate={{ width: `${progress}%` }}
+                                                transition={{ ease: "linear", duration: 0.06 }}
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="flex items-center gap-4">
+                                        <div className={`p-2 rounded-xl transition-colors duration-300`}>
+                                            {feature.icon(isActive)}
+                                        </div>
+                                        <h3 className={`text-xl font-bold transition-colors duration-300 ${isActive ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                                            {feature.title}
+                                        </h3>
+                                    </div>
+                                    <p className={`text-base leading-relaxed transition-all duration-300 ${isActive ? 'text-zinc-600 opacity-100 max-h-40' : 'text-zinc-500 opacity-0 max-h-0 overflow-hidden'}`}>
+                                        {feature.description}
+                                    </p>
+                                </button>
+                            );
+                        })}
+
                     </div>
 
-                    {/* ── Right: Sticky Card Panel ── */}
-                    <div className="flex-1 lg:sticky lg:top-32 h-fit">
+                    {/* ── Right: Spotlight Card Panel ── */}
+                    <div className="lg:col-span-7 relative h-full min-h-[500px] lg:min-h-[600px] flex items-center justify-center">
                         <div className="w-full relative">
                             {/* Ambient glow — transitions with active tab */}
                             <motion.div
@@ -288,7 +295,7 @@ export function MeetTheaSection() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.6 }}
-                                className={`absolute -inset-12 rounded-[3.5rem] ${CARD_GRADIENTS[activeTab]} blur-3xl`}
+                                className={`absolute -inset-16 rounded-[4rem] ${CARD_GRADIENTS[activeTab]} blur-3xl`}
                             />
 
                             {/* Card shell */}
@@ -321,14 +328,15 @@ export function MeetTheaSection() {
                                 </div>
 
                                 {/* Animated card body */}
-                                <div className="relative">
-                                    <AnimatePresence mode="wait">
+                                <div className="relative isolate" style={{ transform: "translateZ(0)" }}>
+                                    <AnimatePresence mode="popLayout" initial={false}>
                                         <motion.div
                                             key={activeTab}
-                                            initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
-                                            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                                            exit={{ opacity: 0, scale: 1.05, filter: "blur(4px)" }}
-                                            transition={{ duration: 0.3, ease: "easeOut" }}
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                                            className="w-full"
                                         >
                                             <ActiveCard />
                                         </motion.div>

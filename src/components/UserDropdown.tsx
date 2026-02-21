@@ -5,11 +5,10 @@ import { useState, useRef, useEffect } from "react";
 
 type UserDropdownProps = {
     userName: string;
-    userRole: string;
     imageUrl?: string;
 };
 
-export function UserDropdown({ userName, userRole, imageUrl }: UserDropdownProps) {
+export function UserDropdown({ userName, imageUrl }: UserDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +49,6 @@ export function UserDropdown({ userName, userRole, imageUrl }: UserDropdownProps
                 )}
                 <div className="flex-1 min-w-0 text-left">
                     <div className="text-sm font-semibold text-zinc-900 truncate">{userName}</div>
-                    <div className="text-xs text-zinc-500 truncate">{userRole}</div>
                 </div>
                 <ChevronIcon className={`h-4 w-4 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
             </button>

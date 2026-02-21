@@ -30,35 +30,12 @@ class MockDatabase {
     private chunks: DocumentChunk[] = [];
 
     constructor() {
-        // Seed with initial data if empty
-        if (this.documents.length === 0) {
-            this.seed();
-        }
+        // No longer seeding with mock data.
+        // It starts completely empty for each authenticating user until we build real DB calls.
     }
 
     seed() {
-        // Add some initial documents to match the mock data
-        this.addDocument({
-            id: "doc_1",
-            folderId: "fld_sales_pricing", // Finance/Pricing
-            uploaderId: "usr_admin",
-            name: "Q3 Financial Report.pdf",
-            size: "2.4 MB",
-            mimeType: "application/pdf",
-            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2h ago
-            content: "Q3 Financial Results: Revenue is up 20% YoY. Operating margin increased to 15%. Focus on enterprise sales for Q4."
-        });
-
-        this.addDocument({
-            id: "doc_2",
-            folderId: "fld_sales_playbook",
-            uploaderId: "usr_sales",
-            name: "Sales Playbook v2.docx",
-            size: "1.1 MB",
-            mimeType: "application/docx",
-            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-            content: "Sales Playbook: 1. Build Rapport. 2. Identify Pain. 3. Propose Solution. 4. Close. Handling objections: If price is too high, emphasize value."
-        });
+        // Empty placeholder — no hardcoded mock documents.
     }
 
     addDocument(doc: Document) {

@@ -14,7 +14,7 @@ interface EnhancedSidebarProps {
 
 export function EnhancedSidebar({ onMobileClose, isMobile = false }: EnhancedSidebarProps) {
   const pathname = usePathname();
-  const { user, org, accessibleFolders } = useWorkspace();
+  const { user, accessibleFolders } = useWorkspace();
   const { user: clerkUser } = useUser();
 
   const isActive = (path: string) => {
@@ -137,7 +137,6 @@ export function EnhancedSidebar({ onMobileClose, isMobile = false }: EnhancedSid
       <div className="border-t border-black/5 p-4">
         <UserDropdown
           userName={user.name}
-          userRole={user.role}
           imageUrl={clerkUser?.imageUrl}
         />
       </div>
