@@ -7,6 +7,8 @@ import { useWorkspace } from "@/components/workspace/WorkspaceProvider";
 import { TheaMark } from "@/components/TheaMark";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { getMessages } from "@/app/actions/chat";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Citation = {
   id: string;
@@ -684,7 +686,13 @@ export default function TheaClient() {
                           : "border border-black/10 bg-white/70 text-zinc-800"
                           }`}
                       >
-                        <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
+                        {m.role === "user" ? (
+                          <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
+                        ) : (
+                          <div className="prose prose-sm prose-zinc max-w-none text-[15px] leading-relaxed prose-p:my-1.5 prose-headings:mt-3 prose-headings:mb-1.5 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-pre:my-2 prose-pre:rounded-lg prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-code:rounded prose-code:bg-zinc-100 prose-code:px-1 prose-code:py-0.5 prose-code:text-zinc-800 prose-code:before:content-none prose-code:after:content-none">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                          </div>
+                        )}
                       </div>
 
                       {/* Message actions for assistant messages */}
