@@ -1,11 +1,17 @@
 
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getUser, getAccessibleFolders } from "@/lib/workspace";
 import { generateEmbedding, generateAnswer, contextualizeQuery } from "@/lib/gemini";
 
+/** Escape SQL LIKE/ILIKE wildcards so user input is treated as literal text. */
+function escapeLikePattern(input: string): string {
+    return input.replace(/[%_\\]/g, (ch) => `\\${ch}`);
+}
+
 export async function POST(req: NextRequest) {
-    const userId = req.headers.get("x-user-id");
+    const { userId } = await auth();
     if (!userId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -107,7 +113,7 @@ export async function POST(req: NextRequest) {
                 .from('documents')
                 .select('id, name, content')
                 .in('folder_id', targetFolderIds)
-                .ilike('content', `%${query}%`)
+                .ilike('content', `%${escapeLikePattern(query)}%`)
                 .limit(10);
 
             if (textResults && textResults.length > 0) {
