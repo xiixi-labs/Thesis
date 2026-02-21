@@ -18,7 +18,8 @@ returns table (
   id uuid,
   document_id uuid,
   content text,
-  similarity float
+  similarity float,
+  chunk_index integer
 )
 language plpgsql
 as $$
@@ -28,7 +29,8 @@ begin
     document_chunks.id,
     document_chunks.document_id,
     document_chunks.content,
-    1 - (document_chunks.embedding <=> query_embedding) as similarity
+    1 - (document_chunks.embedding <=> query_embedding) as similarity,
+    document_chunks.chunk_index
   from document_chunks
   join documents on documents.id = document_chunks.document_id
   where 1 - (document_chunks.embedding <=> query_embedding) > match_threshold

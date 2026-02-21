@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
         await supabase.from('document_chunks').insert({
             document_id: doc.id,
             content: textContent.substring(0, 1000), // First 1k chars
+            chunk_index: 0,
             // embedding: ... (requires OpenAI key)
         });
 

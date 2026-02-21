@@ -123,6 +123,7 @@ export async function registerDocument(formData: FormData) {
         // console.log(`Saving ${chunks.length} chunks for ${fileName}...`);
 
         const chunkPromises = [];
+        let chunkIdx = 0;
         for (const chunk of chunks) {
             if (chunk.length < 10) continue;
 
@@ -130,9 +131,11 @@ export async function registerDocument(formData: FormData) {
                 supabase.from("document_chunks").insert({
                     document_id: doc.id,
                     content: chunk,
+                    chunk_index: chunkIdx,
                     embedding: null, // Will be filled in background
                 })
             );
+            chunkIdx++;
         }
 
         await Promise.all(chunkPromises);
