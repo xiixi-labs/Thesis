@@ -1,8 +1,80 @@
 
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getUser, getAccessibleFolders } from "@/lib/workspace";
 import { generateEmbedding, generateAnswer, contextualizeQuery } from "@/lib/gemini";
+
+// --- Types ---
+
+type ChatMessage = { role: "user" | "assistant"; content: string };
+
+type RetrievalResult = {
+    id: string;
+    document_id: string;
+    content: string;
+    similarity: number;
+};
+
+type HydratedResult = RetrievalResult & { doc_name: string };
+
+type Citation = {
+    id: string;
+    source: string;
+    page: string;
+    snippet: string;
+};
+
+// --- Request Validation ---
+
+const chatMessageSchema = z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().min(1).max(50_000),
+});
+
+const chatRequestSchema = z.object({
+    message: z.string().min(1).max(50_000).optional(),
+    messages: z.array(chatMessageSchema).max(100).optional(),
+    folderIds: z.array(z.string()).max(50).optional(),
+    conversationId: z.string().uuid().optional().nullable(),
+}).refine(
+    (data) => data.message || (data.messages && data.messages.length > 0),
+    { message: "Either 'message' or a non-empty 'messages' array is required" }
+);
+
+// --- Per-User Rate Limiting ---
+
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 20;  // 20 requests per minute
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(userId: string): boolean {
+    const now = Date.now();
+    const entry = rateLimitMap.get(userId);
+
+    if (!entry || now > entry.resetAt) {
+        rateLimitMap.set(userId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+        return true;
+    }
+
+    if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+        return false;
+    }
+
+    entry.count++;
+    return true;
+}
+
+// Periodically clean up stale entries (every 5 min)
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of rateLimitMap) {
+        if (now > entry.resetAt) rateLimitMap.delete(key);
+    }
+}, 5 * 60_000);
+
+// --- Route Handler ---
 
 export async function POST(req: NextRequest) {
     const userId = req.headers.get("x-user-id");
@@ -15,13 +87,30 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Rate limit check
+    if (!checkRateLimit(userId)) {
+        return NextResponse.json(
+            { error: "Too many requests. Please wait a moment." },
+            { status: 429 }
+        );
+    }
+
     try {
-        const { message, messages, folderIds, conversationId: reqConversationId } = await req.json();
+        // Validate request body
+        const rawBody = await req.json();
+        const parseResult = chatRequestSchema.safeParse(rawBody);
+        if (!parseResult.success) {
+            return NextResponse.json(
+                { error: "Invalid request", details: parseResult.error.flatten() },
+                { status: 400 }
+            );
+        }
+        const { message, messages, folderIds, conversationId: reqConversationId } = parseResult.data;
 
         let query = "";
-        let history: any[] = [];
+        let history: ChatMessage[] = [];
 
-        if (messages && Array.isArray(messages) && messages.length > 0) {
+        if (messages && messages.length > 0) {
             const lastMsg = messages[messages.length - 1];
             query = lastMsg.content;
             history = messages.slice(0, -1);
@@ -71,14 +160,14 @@ export async function POST(req: NextRequest) {
         const accessibleIds = new Set(accessible.map(f => f.id));
 
         let targetFolderIds: string[] = [];
-        if (!folderIds || (Array.isArray(folderIds) && folderIds.length === 0)) {
+        if (!folderIds || folderIds.length === 0) {
             targetFolderIds = Array.from(accessibleIds);
         } else {
-            targetFolderIds = folderIds.filter((id: string) => accessibleIds.has(id));
+            targetFolderIds = folderIds.filter((id) => accessibleIds.has(id));
         }
 
         // 2. Perform Retrieval via Gemini Embeddings
-        let results: any[] = [];
+        let results: RetrievalResult[] = [];
 
         try {
             // Use the rewritten query for embedding generation
@@ -94,7 +183,7 @@ export async function POST(req: NextRequest) {
             if (error) {
                 console.error("Vector search error:", error);
             } else if (vectorResults) {
-                results = vectorResults;
+                results = vectorResults as RetrievalResult[];
             }
         } catch (embeddingError) {
             console.warn("Embedding/vector search failed, falling back to keyword search:", embeddingError);
@@ -102,7 +191,6 @@ export async function POST(req: NextRequest) {
 
         // Fallback if empty (keyword search)
         if (!results || results.length === 0) {
-            // console.log("Using keyword fallback search for:", query);
             const { data: textResults } = await supabase
                 .from('documents')
                 .select('id, name, content')
@@ -111,7 +199,7 @@ export async function POST(req: NextRequest) {
                 .limit(10);
 
             if (textResults && textResults.length > 0) {
-                results = textResults.map((doc: any) => ({
+                results = textResults.map((doc: { id: string; name: string; content: string }) => ({
                     id: doc.id,
                     document_id: doc.id,
                     content: doc.content,
@@ -121,13 +209,13 @@ export async function POST(req: NextRequest) {
         }
 
         // Hydrate doc names
-        const finalResults = [];
-        if (results && results?.length > 0) {
-            const docIds = results.map((r: any) => r.document_id);
+        const finalResults: HydratedResult[] = [];
+        if (results && results.length > 0) {
+            const docIds = results.map((r) => r.document_id);
             const { data: docMetas } = await supabase.from('documents').select('id, name').in('id', docIds);
 
-            finalResults.push(...results.map((r: any) => {
-                const meta = docMetas?.find((d: any) => d.id === r.document_id);
+            finalResults.push(...results.map((r) => {
+                const meta = docMetas?.find((d: { id: string; name: string }) => d.id === r.document_id);
                 return { ...r, doc_name: meta?.name ?? "Unknown" };
             }));
         }
@@ -138,19 +226,20 @@ export async function POST(req: NextRequest) {
             if (finalResults.length === 0) {
                 answer = await generateAnswer("No relevant documents found.", query, history);
             } else {
-                const context = finalResults.map((r: any) =>
+                const context = finalResults.map((r) =>
                     `Document: ${r.doc_name}\nContent: ${r.content}`
                 ).join("\n\n");
 
                 answer = await generateAnswer(context, query, history);
             }
-        } catch (aiError: any) {
+        } catch (aiError: unknown) {
+            const errMsg = aiError instanceof Error ? aiError.message : "Unknown error";
             console.error("AI generation failed:", aiError);
-            answer = `I apologize, but I'm having trouble generating a response right now. Error: ${aiError.message || 'Unknown error'}`;
+            answer = `I apologize, but I'm having trouble generating a response right now. Error: ${errMsg}`;
         }
 
         // 4. Format Citations
-        const citations = finalResults.map((r: any, i: number) => ({
+        const citations: Citation[] = finalResults.map((r, i) => ({
             id: `cit_${i}`,
             source: r.doc_name,
             page: "Page 1",
@@ -175,14 +264,15 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({
-            role: "assistant",
+            role: "assistant" as const,
             content: answer,
             citations,
             conversationId
         });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
+        const errMsg = e instanceof Error ? e.message : "Internal Server Error";
         console.error(e);
-        return NextResponse.json({ error: e.message || "Internal Server Error", details: JSON.stringify(e) }, { status: 500 });
+        return NextResponse.json({ error: errMsg }, { status: 500 });
     }
 }
