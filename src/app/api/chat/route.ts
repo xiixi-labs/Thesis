@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
-import { getUser, getAccessibleFolders } from "@/lib/workspace";
 import { generateEmbedding, generateAnswerStream, contextualizeQuery } from "@/lib/gemini";
 
 /** Escape SQL LIKE/ILIKE wildcards so user input is treated as literal text. */
@@ -100,6 +99,7 @@ const chatRequestSchema = z.object({
     messages: z.array(chatMessageSchema).max(100).optional(),
     folderIds: z.array(z.string()).max(50).optional(),
     conversationId: z.string().uuid().optional().nullable(),
+    isProModel: z.boolean().optional(),
 }).refine(
     (data) => data.message || (data.messages && data.messages.length > 0),
     { message: "Either 'message' or a non-empty 'messages' array is required" }
@@ -145,11 +145,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = getUser(userId);
-    if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
     // Rate limit check
     if (!checkRateLimit(userId)) {
         return NextResponse.json(
@@ -168,7 +163,7 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
-        const { message, messages, folderIds, conversationId: reqConversationId } = parseResult.data;
+        const { message, messages, folderIds, conversationId: reqConversationId, isProModel } = parseResult.data;
 
         let query = "";
         let history: ChatMessage[] = [];
@@ -219,14 +214,23 @@ export async function POST(req: NextRequest) {
         }
 
         // 2. Validate Scope
-        const accessible = getAccessibleFolders(user);
-        const accessibleIds = new Set(accessible.map(f => f.id));
+        let targetFolderIds: string[] = folderIds || [];
 
-        let targetFolderIds: string[] = [];
-        if (!folderIds || folderIds.length === 0) {
-            targetFolderIds = Array.from(accessibleIds);
-        } else {
-            targetFolderIds = folderIds.filter((id) => accessibleIds.has(id));
+        // If no explicit folders requested, retrieve all unique folder IDs the user owns
+        if (targetFolderIds.length === 0) {
+            const { data: userDocs } = await supabaseAdmin
+                .from('documents')
+                .select('folder_id')
+                .eq('uploader_id', userId);
+
+            if (userDocs) {
+                targetFolderIds = Array.from(new Set(userDocs.map(d => d.folder_id).filter(Boolean)));
+            }
+        }
+
+        // Safety fallback to prevent match_documents failing when array is fully empty
+        if (targetFolderIds.length === 0) {
+            targetFolderIds = ['no-folders-found'];
         }
 
         // 3. Perform Retrieval via Gemini Embeddings
@@ -236,7 +240,7 @@ export async function POST(req: NextRequest) {
             // Use the rewritten query for embedding generation
             const embedding = await generateEmbedding(searchSocket);
 
-            const { data: vectorResults, error } = await supabase.rpc('match_documents', {
+            const { data: vectorResults, error } = await supabaseAdmin.rpc('match_documents', {
                 query_embedding: embedding,
                 match_threshold: 0.5, // Safe threshold
                 match_count: 50, // Maximizing context window capability
@@ -254,7 +258,7 @@ export async function POST(req: NextRequest) {
 
         // Fallback if empty (keyword search)
         if (!results || results.length === 0) {
-            const { data: textResults } = await supabase
+            const { data: textResults } = await supabaseAdmin
                 .from('documents')
                 .select('id, name, content')
                 .in('folder_id', targetFolderIds)
@@ -276,7 +280,7 @@ export async function POST(req: NextRequest) {
         const finalResults: HydratedResult[] = [];
         if (results && results.length > 0) {
             const docIds = results.map((r) => r.document_id);
-            const { data: docMetas } = await supabase.from('documents').select('id, name').in('id', docIds);
+            const { data: docMetas } = await supabaseAdmin.from('documents').select('id, name').in('id', docIds);
 
             finalResults.push(...results.map((r) => {
                 const meta = docMetas?.find((d: { id: string; name: string }) => d.id === r.document_id);
@@ -321,7 +325,7 @@ export async function POST(req: NextRequest) {
 
                 let fullAnswer = "";
                 try {
-                    for await (const chunk of generateAnswerStream(context, query, history)) {
+                    for await (const chunk of generateAnswerStream(context, query, history, isProModel)) {
                         fullAnswer += chunk;
                         controller.enqueue(encoder.encode(`event: text\ndata: ${JSON.stringify({ content: chunk })}\n\n`));
                     }

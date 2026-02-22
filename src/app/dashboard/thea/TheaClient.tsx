@@ -17,7 +17,9 @@ import {
   MicIcon,
   XIcon,
   ChevronDownIcon,
+  StopIcon,
 } from "@/components/icons/TheaIcons";
+import { ChatInput } from "@/components/chat/ChatInput";
 
 type Citation = {
   id: string;
@@ -89,6 +91,9 @@ export default function TheaClient() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [isProModel, setIsProModel] = useState(false);
+
+  const isPersonalPro = user?.publicMetadata?.plan === "Personal Pro";
 
   // Load conversation when URL changes
   useEffect(() => {
@@ -386,7 +391,11 @@ export default function TheaClient() {
 
     const assistantMsgId = (Date.now() + 1).toString();
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+      { id: assistantMsgId, role: "assistant" as const, content: "" }
+    ]);
     setInput("");
     // Reset textarea height after clearing
     if (textareaRef.current) {
@@ -406,7 +415,8 @@ export default function TheaClient() {
         body: JSON.stringify({
           messages: messagesToSend,
           folderIds: selectedFolderIds,
-          conversationId: activeConversationId
+          conversationId: activeConversationId,
+          isProModel,
         }),
         signal: abortController.signal,
       });
@@ -414,8 +424,7 @@ export default function TheaClient() {
       if (!res.ok) throw new Error("Failed to fetch response");
       if (!res.body) throw new Error("No response body");
 
-      // Add empty assistant message placeholder for streaming
-      setMessages((prev) => [...prev, { id: assistantMsgId, role: "assistant" as const, content: "" }]);
+      // Empty placeholder was added synchronously before fetch
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -430,13 +439,22 @@ export default function TheaClient() {
         const lines = buffer.split("\n");
         buffer = lines.pop()!; // Keep incomplete line in buffer
 
-        let eventType = "";
+        let eventType = "message"; // default SSE event type
         for (const line of lines) {
+          if (line.trim() === "") {
+            // End of an event block
+            eventType = "message";
+            continue;
+          }
+
           if (line.startsWith("event: ")) {
-            eventType = line.slice(7);
+            eventType = line.slice(7).trim();
           } else if (line.startsWith("data: ")) {
+            const dataStr = line.slice(6).trim();
+            if (dataStr === "[DONE]") continue; // standard SSE finish
+
             try {
-              const data = JSON.parse(line.slice(6));
+              const data = JSON.parse(dataStr);
 
               if (eventType === "meta") {
                 if (!activeConversationId && data.conversationId) {
@@ -444,14 +462,14 @@ export default function TheaClient() {
                   router.replace(`/dashboard/thea?chatId=${data.conversationId}`, { scroll: false });
                 }
                 if (data.citations) pendingCitations = data.citations;
-              } else if (eventType === "text") {
+              } else if (eventType === "text" || eventType === "message") {
                 setMessages((prev) => {
                   const updated = [...prev];
                   const lastIdx = updated.length - 1;
                   if (updated[lastIdx]?.id === assistantMsgId) {
                     updated[lastIdx] = {
                       ...updated[lastIdx],
-                      content: updated[lastIdx].content + data.content,
+                      content: updated[lastIdx].content + (data.content || ""),
                     };
                   }
                   return updated;
@@ -467,10 +485,9 @@ export default function TheaClient() {
                   return updated;
                 });
               }
-            } catch {
-              // Ignore malformed SSE data
+            } catch (err) {
+              console.warn("SSE Parse Error on chunk:", dataStr);
             }
-            eventType = "";
           }
         }
       }
@@ -616,7 +633,7 @@ export default function TheaClient() {
 
         {/* Sticky Header */}
         <div className="sticky top-0 z-20 border-b border-black/5 bg-white/40 backdrop-blur-2xl">
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
+          <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -626,70 +643,6 @@ export default function TheaClient() {
                 <SidebarIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Chats</span>
               </button>
-
-              <div className="ml-1 hidden items-center gap-2 sm:flex">
-                <TheaMark className="h-5 w-5" />
-                <span className="text-sm font-semibold text-zinc-900">Thea</span>
-              </div>
-            </div>
-
-            <div className="relative" ref={scopeRef}>
-              <button
-                type="button"
-                onClick={() => setScopeOpen((v) => !v)}
-                className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition border ${selectedFolderIds.length > 0
-                  ? "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
-                  : "text-zinc-600 bg-transparent border-transparent hover:bg-black/5"
-                  }`}
-              >
-                {selectedFolderIds.length > 0 && (
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                  </span>
-                )}
-                <span className="max-w-[14rem] truncate">{scopeLabel}</span>
-                <ChevronDownIcon className={`h-4 w-4 ${selectedFolderIds.length > 0 ? "text-indigo-400" : "text-zinc-400 group-hover:text-zinc-600"}`} />
-              </button>
-
-              {scopeOpen && (
-                <div className="absolute right-0 top-full z-50 mt-2 w-[20rem] overflow-hidden rounded-xl border border-black/10 bg-white/95 p-1 shadow-lg ring-1 ring-black/5 backdrop-blur-xl">
-                  {/* ... (scope dropdown content remains same) ... */}
-                  <div className="px-3 py-2 text-xs font-semibold text-zinc-500">Search scope</div>
-                  <button
-                    type="button"
-                    onClick={() => setManualSelectedFolderIds([])}
-                    className="w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-900 hover:bg-black/5"
-                  >
-                    All accessible notebooks
-                  </button>
-                  <div className="my-1 h-px bg-zinc-200/50" />
-                  <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200">
-                    {accessibleFolders.map((f) => {
-                      const checked = selectedFolderIds.includes(f.id);
-                      return (
-                        <label
-                          key={f.id}
-                          className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-zinc-800 hover:bg-black/5"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(e) => {
-                              const next = e.target.checked
-                                ? uniq([...selectedFolderIds, f.id])
-                                : selectedFolderIds.filter((id) => id !== f.id);
-                              setManualSelectedFolderIds(next);
-                            }}
-                            className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                          <span className="flex-1 truncate">{f.name}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -807,7 +760,29 @@ export default function TheaClient() {
                           <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{m.content}</p>
                         ) : (
                           <div className="prose prose-sm prose-zinc max-w-none text-[15px] leading-relaxed prose-p:my-1.5 prose-headings:mt-3 prose-headings:mb-1.5 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-pre:my-2 prose-pre:rounded-lg prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-code:rounded prose-code:bg-zinc-100 prose-code:px-1 prose-code:py-0.5 prose-code:text-zinc-800 prose-code:before:content-none prose-code:after:content-none">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                            {m.content.includes("[UPGRADE_BUTTON]") ? (
+                              m.content.split("[UPGRADE_BUTTON]").map((part, i, arr) => (
+                                <span key={i}>
+                                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{part}</ReactMarkdown>
+                                  {i < arr.length - 1 && (
+                                    <div className="my-4 flex">
+                                      <button
+                                        type="button"
+                                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:from-amber-400 hover:to-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all transform hover:scale-105"
+                                        onClick={() => window.alert("Pro Upgrade Flow Coming Soon!")}
+                                      >
+                                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                        </svg>
+                                        Upgrade to Thesis Pro
+                                      </button>
+                                    </div>
+                                  )}
+                                </span>
+                              ))
+                            ) : (
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                            )}
                           </div>
                         )}
                       </div>
@@ -914,81 +889,65 @@ export default function TheaClient() {
           </div>
         </div>
 
-        {/* Input - Floating at bottom */}
         <div className="flex-shrink-0 px-4 pb-4 pt-2">
-          <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
-            {/* Clean, Simple Input Container */}
-            <div className="relative flex items-center gap-3 rounded-[2rem] bg-zinc-50/80 border border-zinc-200/80 p-3 shadow-sm transition hover:bg-white hover:border-black/20 focus-within:bg-white focus-within:border-black/20 focus-within:ring-4 focus-within:ring-black/5 backdrop-blur-xl">
-              <button
-                type="button"
-                onClick={toggleListening}
-                className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-200 hover:bg-zinc-200/50 ${isListening ? "animate-pulse bg-red-100 text-red-600" : "text-zinc-600"}`}
-                aria-label={isListening ? "Stop voice input" : "Start voice input"}
-              >
-                <MicIcon className="h-5 w-5" />
-              </button>
+          <div className="mx-auto max-w-3xl relative">
 
-              <div className="relative min-w-0 flex-1 flex items-center">
-                {isListening && (
-                  <div className="absolute -top-8 left-0 flex items-center gap-1.5 text-xs font-semibold text-red-600">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                    </span>
-                    Listening...
-                  </div>
-                )}
-                <textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value);
-                    // Auto-resize
-                    const el = e.target;
-                    el.style.height = "auto";
-                    el.style.height = Math.min(el.scrollHeight, 128) + "px"; // 128px = max-h-32
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitMessage(); }
-                  }}
-                  placeholder="Ask Thea anything..."
-                  rows={1}
-                  className="max-h-32 w-full resize-none bg-transparent px-1 text-lg text-zinc-900 placeholder:text-zinc-500 focus:outline-none scrollbar-hide py-3 leading-6"
-                  style={{ minHeight: '3rem' }}
-                />
+            {/* Folder Scope Dropdown (Renders absolute above input) */}
+            {scopeOpen && (
+              <div ref={scopeRef} className="absolute bottom-[calc(100%+0.5rem)] left-0 z-50 w-[20rem] overflow-hidden rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl ring-1 ring-black/5 backdrop-blur-2xl">
+                <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-zinc-500">Focus Your Search</div>
+                <button
+                  type="button"
+                  onClick={() => { setManualSelectedFolderIds([]); setScopeOpen(false); }}
+                  className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-black/5 transition-colors"
+                >
+                  All accessible notebooks
+                </button>
+                <div className="my-1.5 h-px bg-zinc-200/50" />
+                <div className="max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 pr-1 space-y-0.5">
+                  {accessibleFolders.map((f) => {
+                    const checked = selectedFolderIds.includes(f.id);
+                    return (
+                      <label
+                        key={f.id}
+                        className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-800 hover:bg-black/5 transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => {
+                            const next = e.target.checked
+                              ? uniq([...selectedFolderIds, f.id])
+                              : selectedFolderIds.filter((id) => id !== f.id);
+                            setManualSelectedFolderIds(next);
+                          }}
+                          className="h-[18px] w-[18px] rounded-md border-zinc-300 text-indigo-600 focus:ring-indigo-500/50"
+                        />
+                        <span className="flex-1 truncate">{f.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
+            )}
 
-              <div className="flex-shrink-0">
-                {isLoading ? (
-                  <button
-                    type="button"
-                    onClick={stopGenerating}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-sm transition-all hover:bg-red-700"
-                    aria-label="Stop generating"
-                  >
-                    <StopIcon className="h-4 w-4" />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={!input.trim()}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-400"
-                  >
-                    <ArrowUpIcon className="h-6 w-6 stroke-[2.5px]" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-3 text-center">
-              <p className="text-[10px] text-zinc-400">
-                Thea may display inaccurate info, including about people, so double-check its responses.
-              </p>
-            </div>
-          </form>
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              isLoading={isLoading}
+              onSubmit={submitMessage}
+              onStop={stopGenerating}
+              setVoiceError={setVoiceError}
+              isProModel={isProModel}
+              setIsProModel={setIsProModel}
+              onScopeClick={() => setScopeOpen(!scopeOpen)}
+              scopeLabel={scopeLabel}
+              scopeActive={selectedFolderIds.length > 0}
+              isPersonalPro={isPersonalPro}
+            />
+          </div>
         </div>
       </div>
-
 
       {/* Sources - Right Sidebar */}
       {
@@ -1112,12 +1071,3 @@ export default function TheaClient() {
   );
 }
 
-
-
-function StopIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-      <rect x="6" y="6" width="12" height="12" rx="2" />
-    </svg>
-  );
-}
